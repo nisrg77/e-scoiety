@@ -5,6 +5,42 @@ from .models import ResidentProfile
 
 # --- Admin Views ---
 
+from core.models import User
+from .forms import ResidentOnboardingForm
+
+@login_required
+def onboard_resident_view(request, user_id):
+    """
+    Admin-only view to onboard a new resident by assigning them a flat
+    and creating their ResidentProfile.
+    """
+    if request.user.role != 'admin':
+        return redirect('resident_dashboard')
+        
+    target_user = get_object_or_404(User, id=user_id, role='resident')
+    
+    if request.method == 'POST':
+        form = ResidentOnboardingForm(request.POST)
+        if form.is_valid():
+            flat = form.cleaned_data['flat']
+            move_in_date = form.cleaned_data['move_in_date']
+            
+            # Create profile and assign flat
+            services.create_resident_profile(
+                user_id=target_user.id,
+                flat_id=flat.id,
+                move_in_date=move_in_date
+            )
+            return redirect('admin_dashboard')
+    else:
+        form = ResidentOnboardingForm()
+        
+    context = {
+        'form': form,
+        'target_user': target_user
+    }
+    return render(request, 'residents/onboard_resident.html', context)
+
 @login_required
 def resident_directory_view(request):
     """

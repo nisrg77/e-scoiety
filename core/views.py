@@ -103,14 +103,20 @@ def admin_dashboard(request):
     from facilities.models import FacilityBooking
     from finance.models import SocietyExpense, Invoice
     from django.db.models import Sum
+    from core.models import User
     
-    total_residents = ResidentProfile.objects.count()
+    total_residents = User.objects.filter(role='resident').count()
+    total_security = User.objects.filter(role='security').count()
+    pending_residents = User.objects.filter(role='resident', resident_profile__isnull=True)
+    
     active_bookings = FacilityBooking.objects.filter(status='approved').count()
     total_expenses = SocietyExpense.objects.aggregate(Sum('amount'))['amount__sum'] or 0
     total_revenue = Invoice.objects.filter(status='paid').aggregate(Sum('amount'))['amount__sum'] or 0
     
     context = {
         'total_residents': total_residents,
+        'total_security': total_security,
+        'pending_residents': pending_residents,
         'active_bookings': active_bookings,
         'total_expenses': total_expenses,
         'total_revenue': total_revenue,

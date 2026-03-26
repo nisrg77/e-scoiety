@@ -193,6 +193,38 @@
 </div>
 </div>
 </div>
+<!-- Right Column: Pending & Priority -->
+<div class="space-y-8">
+<!-- Pending Onboarding -->
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<h3 class="text-xl font-headline font-bold">Pending Onboarding</h3>
+{% if pending_residents %}
+<span class="bg-primary-container text-on-primary-container text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-tighter">{{ pending_residents.count }} Requests</span>
+{% endif %}
+</div>
+<div class="bg-surface-container-low rounded-lg p-2 space-y-2 max-h-80 overflow-y-auto">
+{% for pending in pending_residents %}
+<div class="bg-white p-5 rounded-xl flex items-center justify-between group cursor-pointer hover:shadow-md transition-all" onclick="window.location.href='{% url 'onboard_resident' pending.id %}'">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="person_add">person_add</span>
+</div>
+<div>
+<h4 class="text-sm font-bold">{{ pending.email }}</h4>
+<p class="text-xs text-on-surface-variant">Registered: {{ pending.created_at|date:"M d, Y" }}</p>
+</div>
+</div>
+<span class="text-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">Onboard &rarr;</span>
+</div>
+{% empty %}
+<div class="p-5 text-center text-sm text-on-surface-variant">
+    All clear! No pending onboarding tasks.
+</div>
+{% endfor %}
+</div>
+</div>
+
 <!-- High Priority Tickets -->
 <div class="space-y-6">
 <div class="flex justify-between items-center">
@@ -237,6 +269,8 @@
 <span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
 </div>
 </div>
+</div>
+
 </div>
 </section>
 </div>
