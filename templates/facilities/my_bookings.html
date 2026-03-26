@@ -1,0 +1,96 @@
+{% extends base_template %}
+
+{% block title %}My Bookings | eSociety{% endblock %}
+{% block page_title %}My Bookings{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-extrabold text-on-surface tracking-tight">My Bookings</h2>
+            <p class="text-sm text-on-surface-variant font-medium mt-1">Past and upcoming reservations</p>
+        </div>
+        <a href="{% url 'book_facility' %}" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-on-primary font-semibold text-sm shadow-lg shadow-primary/20 active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+            New Booking
+        </a>
+    </div>
+
+    <!-- Bookings List -->
+    {% if bookings %}
+    <div class="space-y-4">
+        {% for booking in bookings %}
+        <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/10 flex flex-col group relative overflow-hidden">
+            <!-- Status side indicator -->
+            {% if booking.status == 'confirmed' %}
+            <div class="absolute top-0 left-0 w-1.5 h-full bg-green-500"></div>
+            {% elif booking.status == 'pending' %}
+            <div class="absolute top-0 left-0 w-1.5 h-full bg-amber-500"></div>
+            {% elif booking.status == 'cancelled' %}
+            <div class="absolute top-0 left-0 w-1.5 h-full bg-red-400"></div>
+            {% endif %}
+            
+            <div class="flex items-center justify-between mb-3 pl-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[20px]">sports_gymnastics</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-on-surface text-base">{{ booking.facility.name }}</h3>
+                        <p class="text-xs text-on-surface-variant">{{ booking.date|date:"M d, Y" }} · {{ booking.start_time|time:"H:i" }} – {{ booking.end_time|time:"H:i" }}</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-end gap-1">
+                    <!-- Status badge -->
+                    <span class="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest
+                        {% if booking.status == 'confirmed' %}bg-green-100 text-green-800
+                        {% elif booking.status == 'pending' %}bg-amber-100 text-amber-800
+                        {% elif booking.status == 'cancelled' %}bg-red-100 text-red-700
+                        {% else %}bg-slate-100 text-slate-600{% endif %}">
+                        {{ booking.status|capfirst }}
+                    </span>
+                    
+                    <!-- Payment badge (only for resident bookings with fee) -->
+                    {% if booking.payment_status == 'unpaid' and booking.facility.booking_fee > 0 and booking.status != 'cancelled' %}
+                    <a href="{% url 'pay_booking' booking.id %}" class="px-2.5 py-1 rounded-md bg-red-100 text-red-800 text-[10px] font-bold uppercase tracking-widest active:scale-95">
+                        Pay ₹{{ booking.facility.booking_fee }}
+                    </a>
+                    {% elif booking.payment_status == 'paid' and booking.facility.booking_fee > 0 %}
+                    <span class="px-2.5 py-1 rounded-md bg-green-100 text-green-800 text-[10px] font-bold uppercase tracking-widest">Paid</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Cancel button — only for active (non-cancelled) bookings -->
+            {% if booking.status != 'cancelled' %}
+            <div class="pl-3 mt-3 pt-3 border-t border-outline-variant/10">
+                <form method="POST" action="{% url 'cancel_booking' booking.id %}" onsubmit="return confirm('Cancel this booking for {{ booking.facility.name }}?');">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="flex items-center gap-1.5 text-error text-xs font-bold hover:bg-error/10 px-3 py-1.5 rounded-lg transition-all active:scale-95">
+                        <span class="material-symbols-outlined text-[16px]">cancel</span>
+                        Cancel Booking
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="bg-surface-container-lowest p-8 rounded-3xl shadow-sm border border-outline-variant/10 flex flex-col items-center justify-center text-center mt-8">
+        <div class="w-16 h-16 bg-secondary-fixed text-on-secondary-fixed-variant rounded-full flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-3xl">event_busy</span>
+        </div>
+        <h3 class="text-xl font-bold text-on-surface mb-2">No Bookings Yet</h3>
+        <p class="text-sm text-on-surface-variant mb-6 mw-xs">No facility reservations have been made. Book one now!</p>
+        <a href="{% url 'book_facility' %}" class="py-3 px-6 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary font-semibold text-sm shadow-lg shadow-primary/20 active:scale-[0.98] transition-all">
+            Book a Facility
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

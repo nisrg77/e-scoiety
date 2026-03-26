@@ -1,0 +1,221 @@
+{% extends 'security_base.html' %}
+
+{% block title %}Security Dashboard | eSociety{% endblock %}
+{% block page_title %}Security Station{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="text-[2.75rem] font-['Plus_Jakarta_Sans'] font-bold text-on-surface leading-tight tracking-tight">Main Gate Security Terminal</h1>
+<p class="text-slate-500 font-['Inter'] text-lg mt-1">Shift Active: Gate A • Sector 4</p>
+</div>
+<div class="flex items-center gap-3 bg-white p-2 rounded-2xl shadow-sm border border-surface-container-high">
+<div class="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-xl">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="font-bold text-sm">SYSTEM LIVE</span>
+</div>
+<div class="px-4 py-2 text-slate-400 font-medium text-sm">
+                        14:32 PM
+                    </div>
+</div>
+</div>
+<!-- Stats Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Visitors Inside -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0_12px_40px_rgba(25,28,31,0.04)] flex items-center gap-6">
+<div class="h-16 w-16 bg-primary/10 rounded-2xl flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl fill-icon" data-icon="group" style="font-variation-settings: 'FILL' 1;">group</span>
+</div>
+<div>
+<p class="text-slate-500 text-sm font-bold uppercase tracking-wider">Visitors Inside</p>
+<h3 class="text-4xl font-['Plus_Jakarta_Sans'] font-bold text-on-surface">{{ visitors_inside|default:0|stringformat:"02d" }}</h3>
+</div>
+</div>
+<!-- Expected Deliveries -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0_12px_40px_rgba(25,28,31,0.04)] flex items-center gap-6">
+<div class="h-16 w-16 bg-tertiary/10 rounded-2xl flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-3xl fill-icon" data-icon="local_shipping" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+</div>
+<div>
+<p class="text-slate-500 text-sm font-bold uppercase tracking-wider">Expected Deliveries</p>
+<h3 class="text-4xl font-['Plus_Jakarta_Sans'] font-bold text-on-surface">{{ expected_deliveries|default:0|stringformat:"02d" }}</h3>
+</div>
+</div>
+<!-- Emergency Alerts -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0_12px_40px_rgba(25,28,31,0.04)] flex items-center gap-6">
+<div class="h-16 w-16 bg-error/10 rounded-2xl flex items-center justify-center">
+<span class="material-symbols-outlined text-error text-3xl fill-icon" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div>
+<p class="text-slate-500 text-sm font-bold uppercase tracking-wider">Emergency Alerts</p>
+<h3 class="text-4xl font-['Plus_Jakarta_Sans'] font-bold text-on-surface">{{ emergency_alerts|default:0|stringformat:"02d" }}</h3>
+</div>
+</div>
+</div>
+<!-- Main Interactive Section -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+<!-- Left: Active Visitor Log (7/12) -->
+<div class="xl:col-span-7 space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="text-xl font-bold font-['Plus_Jakarta_Sans'] flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+                            Active Visitor Log
+                        </h2>
+<a href="{% url 'security_visitor_log' %}" class="text-primary text-sm font-bold hover:underline">View All</a>
+</div>
+<div class="space-y-4">
+<!-- Dynamic Visitor Logic -->
+{% for visitor in recent_visitors %}
+<div class="bg-white p-4 rounded-lg flex items-center justify-between shadow-sm group hover:shadow-md transition-shadow duration-200">
+<div class="flex items-center gap-4">
+<div class="h-14 w-14 rounded-xl {% if 'Delivery' in visitor.purpose %}bg-tertiary-container text-tertiary-dark{% elif 'Guest' in visitor.purpose %}bg-primary-container text-primary-dark{% else %}bg-surface-container-high text-on-surface-variant{% endif %} flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">
+{% if 'Delivery' in visitor.purpose %}local_shipping{% elif 'Guest' in visitor.purpose %}person{% else %}build{% endif %}
+</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">{{ visitor.name }}</h4>
+<p class="text-sm text-slate-500">Flat {% if visitor.resident.flat %}{{ visitor.resident.flat.number }}{% else %}Unknown{% endif %} • {{ visitor.purpose }}</p>
+</div>
+</div>
+<div class="text-right flex items-center gap-6">
+<div>
+<p class="text-[10px] font-bold text-slate-400 uppercase">Entry Time</p>
+<p class="text-sm font-semibold text-on-surface">{{ visitor.entry_time|date:"H:i A" }}</p>
+</div>
+<form method="POST" action="{% url 'security_dashboard' %}" class="m-0 p-0 inline-block">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="checkout">
+    <input type="hidden" name="visitor_id" value="{{ visitor.id }}">
+    <button type="submit" class="bg-surface-container-low px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-error/10 hover:text-error transition-colors cursor-pointer">
+        Check Out
+    </button>
+</form>
+</div>
+</div>
+{% empty %}
+<div class="bg-surface-container-lowest p-8 rounded-xl text-center border border-outline-variant/20">
+<span class="material-symbols-outlined text-4xl text-outline mb-2">check_circle</span>
+<p class="text-on-surface-variant font-medium">No visitors currently inside.</p>
+</div>
+{% endfor %}
+</div>
+</div>
+<!-- Right: Quick Check-in Form (5/12) -->
+<div class="xl:col-span-5">
+<div class="bg-white rounded-lg shadow-[0_12px_40px_rgba(25,28,31,0.06)] p-8 sticky top-24">
+<div class="mb-6">
+<h2 class="text-xl font-bold font-['Plus_Jakarta_Sans'] flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="add_circle">add_circle</span>
+                                Quick Check-in
+                            </h2>
+<p class="text-sm text-slate-500 mt-1">Register new visitor entry</p>
+</div>
+<form method="POST" action="{% url 'security_dashboard' %}" class="space-y-5">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="quick_checkin">
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-500 uppercase px-1">Visitor Name</label>
+<input name="name" class="w-full bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 py-3 px-4 font-medium" placeholder="Full Name" type="text" required/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-500 uppercase px-1">Phone Number</label>
+<input name="phone" class="w-full bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 py-3 px-4 font-medium" placeholder="+91" type="tel" required/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-500 uppercase px-1">Flat #</label>
+<input name="flat" class="w-full bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 py-3 px-4 font-medium" placeholder="e.g. B-402" type="text" required/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-500 uppercase px-1">Purpose of Visit</label>
+<select name="purpose" class="w-full bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 py-3 px-4 font-medium appearance-none" required>
+<option value="Guest">Guest / Personal</option>
+<option value="Delivery">Delivery Service</option>
+<option value="Maintenance">Maintenance / Repair</option>
+<option value="Staff">Home Help / Staff</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-500 uppercase px-1">Vehicle Number (Optional)</label>
+<input name="vehicle_number" class="w-full bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 py-3 px-4 font-medium" placeholder="MH-01-AB-1234" type="text"/>
+</div>
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/30 mt-4 active:scale-95 duration-150 flex items-center justify-center gap-2" type="submit">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+                                CONFIRM ENTRY
+                            </button>
+</form>
+</div>
+</div>
+</div>
+<!-- Bottom Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-8 border-t border-slate-200">
+<!-- Recent Gate Alerts -->
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold font-['Plus_Jakarta_Sans'] flex items-center gap-2">
+<span class="material-symbols-outlined text-error" data-icon="gpp_maybe">gpp_maybe</span>
+                        Recent Gate Alerts
+                    </h3>
+<a href="{% url 'security_alert_dashboard' %}" class="text-error text-sm font-bold hover:underline">View All</a>
+</div>
+<div class="space-y-3">
+{% for alert in recent_alerts %}
+<div class="bg-{% if alert.alert_type == 'fire' or alert.alert_type == 'medical' %}red{% else %}amber{% endif %}-50 p-4 rounded-xl flex items-center gap-4 border border-{% if alert.alert_type == 'fire' or alert.alert_type == 'medical' %}red{% else %}amber{% endif %}-100">
+<div class="h-10 w-10 bg-{% if alert.alert_type == 'fire' or alert.alert_type == 'medical' %}error{% else %}tertiary{% endif %}/10 text-{% if alert.alert_type == 'fire' or alert.alert_type == 'medical' %}error{% else %}tertiary{% endif %} rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">
+    {% if alert.alert_type == 'fire' %}local_fire_department{% elif alert.alert_type == 'medical' %}medical_services{% elif alert.alert_type == 'security' %}security{% else %}notification_important{% endif %}
+</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">{{ alert.get_alert_type_display }}</p>
+<p class="text-xs text-slate-500">Flat {% if alert.resident.flat %}{{ alert.resident.flat.number }}{% else %}Unknown{% endif %} • {{ alert.timestamp|date:"H:i A" }}</p>
+</div>
+<form method="POST" action="{% url 'security_dashboard' %}" class="ml-auto m-0 p-0">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="dismiss_alert">
+    <input type="hidden" name="alert_id" value="{{ alert.id }}">
+    <button type="submit" class="text-{% if alert.alert_type == 'fire' or alert.alert_type == 'medical' %}error{% else %}tertiary{% endif %} text-xs font-bold hover:underline cursor-pointer">Dismiss</button>
+</form>
+</div>
+{% empty %}
+<div class="bg-surface-container-lowest p-6 rounded-xl text-center border border-outline-variant/20">
+    <span class="material-symbols-outlined text-3xl text-outline mb-2">gpp_good</span>
+    <p class="text-sm font-medium text-on-surface-variant">No active alerts.</p>
+</div>
+{% endfor %}
+</div>
+</div>
+<!-- Speed Dial -->
+<div class="space-y-4">
+<h3 class="text-lg font-bold font-['Plus_Jakarta_Sans'] flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="call">call</span>
+                        Emergency Speed Dial
+                    </h3>
+<div class="grid grid-cols-3 gap-4">
+<button class="flex flex-col items-center justify-center gap-2 p-4 bg-white rounded-xl shadow-sm border border-surface-container-high hover:border-error/30 hover:bg-error/5 group transition-all">
+<div class="h-12 w-12 bg-red-50 text-error rounded-full flex items-center justify-center group-hover:bg-error group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl" data-icon="emergency">emergency</span>
+</div>
+<span class="text-xs font-bold text-slate-600">Police/911</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 p-4 bg-white rounded-xl shadow-sm border border-surface-container-high hover:border-primary/30 hover:bg-primary/5 group transition-all">
+<div class="h-12 w-12 bg-blue-50 text-primary rounded-full flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl" data-icon="admin_panel_settings">admin_panel_settings</span>
+</div>
+<span class="text-xs font-bold text-slate-600">Admin Office</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 p-4 bg-white rounded-xl shadow-sm border border-surface-container-high hover:border-green-600/30 hover:bg-green-50 group transition-all">
+<div class="h-12 w-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center group-hover:bg-green-600 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl" data-icon="medical_services">medical_services</span>
+</div>
+<span class="text-xs font-bold text-slate-600">Medical</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

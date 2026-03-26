@@ -1,0 +1,86 @@
+{% extends 'resident_base.html' %}
+
+{% block title %}SOS Emergency | eSociety{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-extrabold text-on-surface tracking-tight">SOS Emergency</h2>
+            <p class="text-sm text-error font-bold mt-1 tracking-wide flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">gpp_maybe</span> Immediate Response
+            </p>
+        </div>
+    </div>
+
+    <!-- Warning Banner -->
+    <div class="bg-red-50 p-4 rounded-2xl border border-red-200 flex flex-col items-center justify-center text-center shadow-inner mt-4">
+        <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mb-3 animate-pulse">
+            <span class="material-symbols-outlined text-2xl">emergency</span>
+        </div>
+        <p class="text-sm text-red-800 font-medium">This will immediately notify the security team and neighbors. Use only in genuine emergencies.</p>
+    </div>
+
+    <div class="bg-surface-container-lowest p-6 rounded-3xl shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-outline-variant/10">
+        <form method="POST" id="sosForm" class="space-y-6">
+            {% csrf_token %}
+            
+            <div>
+                <label class="text-sm font-bold text-on-surface tracking-wide block mb-3 text-center">Select emergency type</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="alert_type" value="fire" required class="peer sr-only">
+                        <div class="p-4 rounded-2xl border-2 border-outline-variant/30 bg-surface-container-low text-center flex flex-col items-center gap-2 hover:bg-surface-container transition-all peer-checked:border-red-500 peer-checked:bg-red-50 peer-checked:text-red-700">
+                            <span class="material-symbols-outlined text-3xl opacity-70 group-hover:opacity-100 peer-checked:opacity-100 peer-checked:text-red-600">local_fire_department</span>
+                            <span class="text-sm font-bold">Fire</span>
+                        </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="alert_type" value="medical" class="peer sr-only">
+                        <div class="p-4 rounded-2xl border-2 border-outline-variant/30 bg-surface-container-low text-center flex flex-col items-center gap-2 hover:bg-surface-container transition-all peer-checked:border-red-500 peer-checked:bg-red-50 peer-checked:text-red-700">
+                            <span class="material-symbols-outlined text-3xl opacity-70 group-hover:opacity-100 peer-checked:opacity-100 peer-checked:text-red-600">medical_services</span>
+                            <span class="text-sm font-bold">Medical</span>
+                        </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="alert_type" value="intrusion" class="peer sr-only">
+                        <div class="p-4 rounded-2xl border-2 border-outline-variant/30 bg-surface-container-low text-center flex flex-col items-center gap-2 hover:bg-surface-container transition-all peer-checked:border-red-500 peer-checked:bg-red-50 peer-checked:text-red-700">
+                            <span class="material-symbols-outlined text-3xl opacity-70 group-hover:opacity-100 peer-checked:opacity-100 peer-checked:text-red-600">security</span>
+                            <span class="text-sm font-bold">Intrusion</span>
+                        </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="alert_type" value="other" class="peer sr-only">
+                        <div class="p-4 rounded-2xl border-2 border-outline-variant/30 bg-surface-container-low text-center flex flex-col items-center gap-2 hover:bg-surface-container transition-all peer-checked:border-red-500 peer-checked:bg-red-50 peer-checked:text-red-700">
+                            <span class="material-symbols-outlined text-3xl opacity-70 group-hover:opacity-100 peer-checked:opacity-100 peer-checked:text-red-600">warning</span>
+                            <span class="text-sm font-bold">Other</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="space-y-1.5 pt-2">
+                <textarea name="description" rows="2" class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3.5 text-on-surface placeholder:text-outline focus:ring-2 focus:ring-red-500/50 transition-shadow resize-none" placeholder="Brief location details (e.g. Block A, Floor 3)"></textarea>
+            </div>
+            
+            <div class="pt-4 pb-2">
+                <button type="submit" class="w-full py-5 rounded-2xl bg-gradient-to-b from-red-500 to-red-600 text-white font-black text-xl tracking-wider shadow-[0_15px_30px_rgba(239,68,68,0.4)] active:scale-95 transition-all flex items-center justify-center gap-3 border border-red-700/50">
+                    <span class="material-symbols-outlined text-[32px]">notification_important</span>
+                    SOUND ALARM
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="text-center pb-8">
+        <a href="{% url 'resident_dashboard' %}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container-low text-on-surface-variant font-bold text-sm active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+            Cancel
+        </a>
+    </div>
+</div>
+{% endblock %}

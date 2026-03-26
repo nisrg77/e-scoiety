@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block sidebar_nav %}
+<a href="{% url 'resident_dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'resident_dashboard' %}active{% endif %}">
+    <span class="material-symbols-outlined">home</span>
+    Dashboard
+</a>
+<a href="{% url 'resident_dashboard_data' %}" class="nav-item {% if request.resolver_match.url_name == 'resident_dashboard_data' %}active{% endif %}">
+    <span class="material-symbols-outlined">badge</span>
+    My Profile
+</a>
+<a href="{% url 'my_visitors' %}" class="nav-item {% if request.resolver_match.url_name == 'my_visitors' or request.resolver_match.url_name == 'add_visitor' %}active{% endif %}">
+    <span class="material-symbols-outlined">person_add</span>
+    Visitors
+</a>
+<a href="{% url 'facility_list' %}" class="nav-item {% if request.resolver_match.url_name == 'facility_list' or request.resolver_match.url_name == 'book_facility' or request.resolver_match.url_name == 'my_bookings' %}active{% endif %}">
+    <span class="material-symbols-outlined">domain</span>
+    Facilities
+</a>
+<a href="{% url 'my_complaints' %}" class="nav-item {% if request.resolver_match.url_name == 'my_complaints' or request.resolver_match.url_name == 'raise_complaint' %}active{% endif %}">
+    <span class="material-symbols-outlined">report_problem</span>
+    Complaints
+</a>
+<a href="{% url 'my_invoices' %}" class="nav-item {% if request.resolver_match.url_name == 'my_invoices' %}active{% endif %}">
+    <span class="material-symbols-outlined">receipt_long</span>
+    Invoices & Dues
+</a>
+<a href="{% url 'notice_board' %}" class="nav-item {% if request.resolver_match.url_name == 'notice_board' %}active{% endif %}">
+    <span class="material-symbols-outlined">campaign</span>
+    Notice Board
+</a>
+<a href="{% url 'poll_list' %}" class="nav-item {% if request.resolver_match.url_name == 'poll_list' or request.resolver_match.url_name == 'vote' %}active{% endif %}">
+    <span class="material-symbols-outlined">how_to_vote</span>
+    Community Polls
+</a>
+<a href="{% url 'raise_emergency' %}" class="nav-item {% if request.resolver_match.url_name == 'raise_emergency' %}active{% endif %}" style="color:#ba1a1a;">
+    <span class="material-symbols-outlined">emergency</span>
+    SOS Emergency
+</a>
+{% endblock %}
+
+{% block bottom_nav %}
+<a href="{% url 'resident_dashboard' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'resident_dashboard' %}active{% endif %}">
+    <span class="material-symbols-outlined">home</span>
+    <span>Home</span>
+</a>
+<a href="{% url 'my_visitors' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'my_visitors' or request.resolver_match.url_name == 'add_visitor' %}active{% endif %}">
+    <span class="material-symbols-outlined">person_add</span>
+    <span>Visitors</span>
+</a>
+<a href="{% url 'facility_list' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'facility_list' or request.resolver_match.url_name == 'book_facility' or request.resolver_match.url_name == 'my_bookings' %}active{% endif %}">
+    <span class="material-symbols-outlined">domain</span>
+    <span>Facilities</span>
+</a>
+<a href="{% url 'raise_emergency' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'raise_emergency' %}active{% endif %}" style="color:#ba1a1a;">
+    <span class="material-symbols-outlined">emergency</span>
+    <span>SOS</span>
+</a>
+{% endblock %}

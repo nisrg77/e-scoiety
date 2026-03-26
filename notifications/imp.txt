@@ -1,0 +1,18 @@
+## Proposed Changes: Notifications App 
+**Goal:** Bulletin board for announcements, polls, and discussions.
+
+### notifications/models.py
+- `Notice`: `title`, `content`, `created_by` (FK to `core.User`), `created_at`, `is_pinned`
+- `Poll`: `question`, `created_by` (FK), `created_at`, `is_active`
+- `PollOption`: `poll` (FK), `option_text`, `votes` (IntegerField)
+
+### notifications/services.py
+- `create_notice(user_id, title, content)`
+- `get_active_notices()`
+- `create_poll(user_id, question, options_list)`
+- `cast_vote(resident_id, option_id)`
+
+### notifications/views.py & notifications/urls.py
+- `notice_board_view`
+- `poll_list_view`
+- `vote_view`

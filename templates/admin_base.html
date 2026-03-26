@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block sidebar_nav %}
+<a href="{% url 'admin_dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+    <span class="material-symbols-outlined">dashboard</span>
+    Dashboard
+</a>
+<a href="{% url 'resident_directory' %}" class="nav-item {% if request.resolver_match.url_name == 'resident_directory' %}active{% endif %}">
+    <span class="material-symbols-outlined">group</span>
+    Residents
+</a>
+<a href="{% url 'facility_list' %}" class="nav-item {% if request.resolver_match.url_name == 'facility_list' or request.resolver_match.url_name == 'book_facility' or request.resolver_match.url_name == 'my_bookings' %}active{% endif %}">
+    <span class="material-symbols-outlined">domain</span>
+    Facilities
+</a>
+<a href="{% url 'manage_complaints' %}" class="nav-item {% if request.resolver_match.url_name == 'manage_complaints' %}active{% endif %}">
+    <span class="material-symbols-outlined">report_problem</span>
+    Complaints
+</a>
+<a href="{% url 'expense_report' %}" class="nav-item {% if request.resolver_match.url_name == 'expense_report' %}active{% endif %}">
+    <span class="material-symbols-outlined">payments</span>
+    Accounting
+</a>
+<a href="{% url 'notice_board' %}" class="nav-item {% if request.resolver_match.url_name == 'notice_board' %}active{% endif %}">
+    <span class="material-symbols-outlined">campaign</span>
+    Notices
+</a>
+{% endblock %}
+
+{% block bottom_nav %}
+<a href="{% url 'admin_dashboard' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+    <span class="material-symbols-outlined">dashboard</span>
+    <span>Home</span>
+</a>
+<a href="{% url 'resident_directory' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'resident_directory' %}active{% endif %}">
+    <span class="material-symbols-outlined">group</span>
+    <span>Residents</span>
+</a>
+<a href="{% url 'manage_complaints' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'manage_complaints' %}active{% endif %}">
+    <span class="material-symbols-outlined">report_problem</span>
+    <span>Issues</span>
+</a>
+<a href="{% url 'expense_report' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'expense_report' %}active{% endif %}">
+    <span class="material-symbols-outlined">payments</span>
+    <span>Finance</span>
+</a>
+{% endblock %}

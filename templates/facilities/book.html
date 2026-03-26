@@ -1,0 +1,167 @@
+{% extends base_template %}
+
+{% block title %}Book a Facility | eSociety{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Custom Full Calendar Styling for mobile Tailwind feel */
+    .fc { font-family: 'Inter', sans-serif; }
+    .fc .fc-toolbar-title { font-size: 1.125rem; font-weight: 700; color: var(--on-surface); }
+    .fc-theme-standard td, .fc-theme-standard th, .fc-theme-standard .fc-scrollgrid { border-color: rgba(195, 198, 215, 0.2); }
+    .fc .fc-button-primary { background-color: var(--primary); border-color: var(--primary); outline: none; box-shadow: none; border-radius: 0.5rem; }
+    .fc .fc-button-primary:not(:disabled):active, .fc .fc-button-primary:not(:disabled).fc-button-active { background-color: var(--primary-container); color: var(--on-primary-container); border-color: var(--primary-container); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex items-center gap-3">
+        <a href="{% url 'facility_list' %}" class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface active:scale-95 transition-all">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <div>
+            <h2 class="text-2xl font-extrabold text-on-surface tracking-tight">Book a Facility</h2>
+        </div>
+    </div>
+
+    {% if error %}
+    <div class="bg-red-50 text-red-700 p-4 rounded-xl border border-red-200 flex items-start gap-3 shadow-sm">
+        <span class="material-symbols-outlined text-red-500">error</span>
+        <p class="text-sm font-medium">{{ error }}</p>
+    </div>
+    {% endif %}
+
+    <div class="flex flex-col lg:flex-row gap-6">
+        <!-- Calendar Section -->
+        <div class="bg-surface-container-lowest p-5 rounded-3xl shadow-sm border border-outline-variant/10 flex-grow lg:w-2/3">
+            <div class="flex justify-between items-center mb-4">
+                <h4 class="font-bold text-on-surface text-lg">Availability</h4>
+                <div class="flex gap-3 text-xs font-medium text-on-surface-variant">
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-green-500"></span> Confirmed</span>
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Pending</span>
+                </div>
+            </div>
+            <div id="calendar" class="min-h-[400px]"></div>
+        </div>
+
+        <!-- Booking Form Section -->
+        <div class="bg-surface-container-lowest p-6 rounded-3xl shadow-sm border border-outline-variant/10 lg:w-1/3 h-fit sticky top-24">
+            <div class="mb-6 flex items-center gap-3">
+                <div class="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center">
+                    <span class="material-symbols-outlined">event_available</span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-on-surface text-lg">Timeslot</h3>
+                </div>
+            </div>
+
+            <form method="POST" class="space-y-5">
+                {% csrf_token %}
+                <div class="space-y-1.5">
+                    <label class="text-sm font-bold text-on-surface tracking-wide">Facility <span class="text-error">*</span></label>
+                    <div class="relative">
+                        <select name="facility_id" required class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3.5 text-on-surface appearance-none focus:ring-2 focus:ring-primary/50 transition-shadow">
+                            <option value="" disabled selected>Select a facility…</option>
+                            {% for facility in facilities %}
+                            <option value="{{ facility.id }}" {% if request.GET.facility == facility.id|stringformat:"s" %}selected{% endif %}>{{ facility.name }} {% if facility.booking_fee > 0 %}(₹{{ facility.booking_fee }}){% else %}(Free){% endif %}</option>
+                            {% endfor %}
+                        </select>
+                        <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-sm font-bold text-on-surface tracking-wide">Date <span class="text-error">*</span></label>
+                    <input type="date" name="date" required class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3.5 text-on-surface focus:ring-2 focus:ring-primary/50 transition-shadow">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-bold text-on-surface tracking-wide">Start Time <span class="text-error">*</span></label>
+                        <input type="time" name="start_time" required class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3.5 text-on-surface focus:ring-2 focus:ring-primary/50 transition-shadow">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-bold text-on-surface tracking-wide">End Time <span class="text-error">*</span></label>
+                        <input type="time" name="end_time" required class="w-full bg-surface-container-low border-none rounded-xl px-4 py-3.5 text-on-surface focus:ring-2 focus:ring-primary/50 transition-shadow">
+                    </div>
+                </div>
+
+                <div class="bg-surface-container p-4 rounded-xl flex items-start gap-3 mt-4">
+                    <span class="material-symbols-outlined text-outline mt-0.5" style="font-size: 18px;">info</span>
+                    <p class="text-xs text-on-surface-variant leading-relaxed">Paid facilities will redirect to the payment screen after confirmation.</p>
+                </div>
+
+                <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold text-base shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-6">
+                    <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                    Confirm Booking
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- FullCalendar JS for availability -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var facilitySelect = document.querySelector('select[name="facility_id"]');
+    var dateInput = document.querySelector('input[name="date"]');
+    var startTimeInput = document.querySelector('input[name="start_time"]');
+    var endTimeInput = document.querySelector('input[name="end_time"]');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'timeGridWeek',
+        slotMinTime: '06:00:00',
+        slotMaxTime: '23:00:00',
+        allDaySlot: false,
+        height: 'auto',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: window.innerWidth < 768 ? 'timeGridDay' : 'timeGridWeek,timeGridDay' // Responsive view
+        },
+        selectable: true,
+        selectMirror: true,
+        // Auto-fill form when user drags to select time on calendar
+        select: function(info) {
+            var selectedDate = info.startStr.split('T')[0];
+            var startT = info.startStr.split('T')[1].substring(0, 5);
+            var endT = info.endStr.split('T')[1].substring(0, 5);
+            
+            dateInput.value = selectedDate;
+            startTimeInput.value = startT;
+            endTimeInput.value = endT;
+            
+            // On mobile, scroll down to the form after selection
+            if (window.innerWidth < 1024) {
+                document.querySelector('form').scrollIntoView({behavior: 'smooth', block: 'start'});
+            }
+        },
+        events: function(info, successCallback, failureCallback) {
+            var facilityId = facilitySelect.value;
+            if (!facilityId) {
+                successCallback([]); // Empty calendar if no facility
+                return;
+            }
+            fetch(`/facilities/api/bookings/${facilityId}/`)
+                .then(res => res.json())
+                .then(data => successCallback(data))
+                .catch(err => {
+                    console.error('Error fetching bookings:', err);
+                    failureCallback(err);
+                });
+        }
+    });
+    calendar.render();
+
+    // Re-fetch events if facility changes
+    facilitySelect.addEventListener('change', function() {
+        calendar.refetchEvents();
+    });
+});
+</script>
+{% endblock %}

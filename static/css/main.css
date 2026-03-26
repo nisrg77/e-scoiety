@@ -1,0 +1,523 @@
+/*
+ * eSociety Management System — Global Stylesheet
+ * ------------------------------------------------
+ * All component, utility, and page-specific styles live here.
+ * base.html holds only design-token :root variables and
+ * the core layout skeleton (sidebar / header / content-wrapper).
+ * Every inline style="..." in templates should use a class from this file.
+ */
+
+/* =========================================================
+   1. TYPOGRAPHY UTILITIES
+   ========================================================= */
+.text-xs   { font-size: 11px !important; }
+.text-sm   { font-size: 13px !important; }
+.text-base { font-size: 14px !important; }
+.text-lg   { font-size: 16px !important; }
+.text-xl   { font-size: 18px !important; }
+
+.fw-500 { font-weight: 500 !important; }
+.fw-600 { font-weight: 600 !important; }
+.fw-700 { font-weight: 700 !important; }
+
+.text-primary-color { color: var(--primary) !important; }
+.text-muted-color   { color: var(--text-muted) !important; }
+.text-main-color    { color: var(--text-main) !important; }
+.text-success-color { color: #10B981 !important; }
+.text-warning-color { color: #F59E0B !important; }
+.text-danger-color  { color: #EF4444 !important; }
+
+/* =========================================================
+   2. PAGE HEADER (title + subtitle + action button row)
+   ========================================================= */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+.page-header h2 {
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: var(--text-main);
+}
+.page-header p {
+    color: var(--text-muted);
+    margin-bottom: 0;
+    font-size: 14px;
+}
+.page-header-left { flex: 1; }
+
+/* =========================================================
+   3. STAT CARD  (dashboard KPI boxes)
+   ========================================================= */
+.stat-card {
+    background: var(--surface);
+    border-radius: 18px;
+    padding: 22px 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    transition: var(--transition);
+    text-decoration: none;
+    color: inherit;
+}
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    color: inherit;
+}
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.stat-icon .material-icons-round { font-size: 26px; }
+.stat-icon-primary { background: rgba(79,70,229,0.12);  color: var(--primary); }
+.stat-icon-success { background: rgba(16,185,129,0.12); color: #10B981; }
+.stat-icon-warning { background: rgba(245,158,11,0.12); color: #F59E0B; }
+.stat-icon-danger  { background: rgba(239,68,68,0.12);  color: #EF4444; }
+.stat-icon-purple  { background: rgba(139,92,246,0.12); color: #8B5CF6; }
+
+.stat-number { font-size: 26px; font-weight: 700; line-height: 1; color: var(--text-main); }
+.stat-label  { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+
+/* =========================================================
+   4. ICON CIRCLE  (small coloured icon backgrounds)
+   ========================================================= */
+.icon-circle {
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.icon-circle-sm  { width: 36px;  height: 36px; }
+.icon-circle-md  { width: 46px;  height: 46px; }
+.icon-circle-lg  { width: 58px;  height: 58px; }
+.icon-circle-xl  { width: 72px;  height: 72px; }
+.icon-circle .material-icons-round { font-size: 22px; }
+
+/* Colour modifiers reuse stat-icon colours */
+.ic-primary { background: rgba(79,70,229,0.1);  color: var(--primary); }
+.ic-success { background: rgba(16,185,129,0.1); color: #10B981; }
+.ic-warning { background: rgba(245,158,11,0.1); color: #F59E0B; }
+.ic-danger  { background: rgba(239,68,68,0.1);  color: #EF4444; }
+.ic-purple  { background: rgba(139,92,246,0.1); color: #8B5CF6; }
+
+/* =========================================================
+   5. STATUS BADGES
+   ========================================================= */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+}
+.badge-pending   { background: rgba(245,158,11,0.1);  color: #F59E0B; }
+.badge-open      { background: rgba(245,158,11,0.1);  color: #F59E0B; }
+.badge-in-progress { background: rgba(79,70,229,0.1); color: var(--primary); }
+.badge-resolved  { background: rgba(16,185,129,0.1);  color: #10B981; }
+.badge-closed    { background: rgba(107,114,128,0.1); color: #6B7280; }
+.badge-confirmed { background: rgba(16,185,129,0.1);  color: #10B981; }
+.badge-cancelled { background: rgba(239,68,68,0.1);   color: #EF4444; }
+.badge-entered   { background: rgba(16,185,129,0.1);  color: #10B981; }
+.badge-exited    { background: rgba(107,114,128,0.1); color: #6B7280; }
+.badge-expected  { background: rgba(245,158,11,0.1);  color: #F59E0B; }
+.badge-paid      { background: rgba(16,185,129,0.1);  color: #10B981; }
+.badge-unpaid    { background: rgba(239,68,68,0.1);   color: #EF4444; }
+
+/* =========================================================
+   6. FORM ELEMENTS
+   ========================================================= */
+.form-control,
+.form-select {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--text-main);
+    background: var(--surface);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(79,70,229,0.1);
+    outline: none;
+}
+.form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 6px;
+    letter-spacing: 0.1px;
+}
+.form-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+/* =========================================================
+   7. CARD VARIANTS
+   ========================================================= */
+/* Alert / warning band on left edge */
+.glass-card.card-left-primary { border-left: 4px solid var(--primary); }
+.glass-card.card-left-success { border-left: 4px solid #10B981; }
+.glass-card.card-left-warning { border-left: 4px solid #F59E0B; }
+.glass-card.card-left-danger  { border-left: 4px solid #EF4444; }
+.glass-card.card-left-purple  { border-left: 4px solid #8B5CF6; }
+
+/* No-padding variant for table cards */
+.glass-card.card-table { padding: 0; overflow: hidden; }
+
+/* Centered form card */
+.form-card {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* SOS danger banner card */
+.sos-banner {
+    background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.04));
+    border: 2px solid rgba(239,68,68,0.3);
+    border-radius: 18px;
+    padding: 28px;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+.sos-banner .material-icons-round { font-size: 52px; color: #EF4444; display: block; }
+.sos-banner h2 { font-weight: 700; color: #DC2626; margin: 8px 0 4px; }
+.sos-banner p  { color: var(--text-muted); font-size: 14px; margin: 0; }
+
+/* All-clear / safe card */
+.safe-card {
+    border: 2px dashed rgba(16,185,129,0.3);
+    text-align: center;
+    padding: 48px;
+}
+.safe-card .material-icons-round { font-size: 56px; color: #10B981; opacity: 0.7; display: block; margin-bottom: 12px; }
+.safe-card h4 { font-weight: 700; color: #065f46; }
+
+/* Info alert box */
+.info-box {
+    background: rgba(79,70,229,0.05);
+    border: 1px solid rgba(79,70,229,0.15);
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+.info-box .material-icons-round { font-size: 16px; color: var(--primary); margin-top: 1px; flex-shrink: 0; }
+
+/* =========================================================
+   8. TABLE STYLES
+   ========================================================= */
+.es-table thead tr {
+    font-size: 13px;
+    color: var(--text-muted);
+    background: var(--background);
+}
+.es-table thead th { padding: 14px 16px; font-weight: 600; border: none; }
+.es-table tbody tr { border-top: 1px solid var(--border); }
+.es-table tbody td { padding: 14px 16px; font-size: 14px; vertical-align: middle; }
+.es-table tbody tr:hover { background: var(--surface-hover); }
+
+/* First col gets extra left padding */
+.es-table .col-first { padding-left: 24px; }
+
+/* =========================================================
+   9. EMPTY STATE
+   ========================================================= */
+.empty-state {
+    text-align: center;
+    padding: 64px 32px;
+}
+.empty-state .material-icons-round {
+    font-size: 64px;
+    opacity: 0.25;
+    display: block;
+    margin-bottom: 16px;
+    color: var(--text-muted);
+}
+.empty-state h5 { font-weight: 700; margin-bottom: 8px; }
+.empty-state p  { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
+
+/* =========================================================
+   10. BACK LINK
+   ========================================================= */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    transition: color 0.2s;
+}
+.back-link:hover { color: var(--primary); }
+.back-link .material-icons-round { font-size: 18px; }
+
+/* =========================================================
+   11. RADIO OPTION TILES  (e.g. SOS emergency type picker)
+   ========================================================= */
+.option-tile {
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    user-select: none;
+}
+.option-tile:hover     { border-color: var(--primary); background: rgba(79,70,229,0.04); }
+.option-tile.selected  { border-color: var(--primary); background: rgba(79,70,229,0.08); }
+.option-tile .material-icons-round { font-size: 30px; color: var(--text-muted); margin-bottom: 6px; display: block; transition: color 0.2s; }
+.option-tile.selected .material-icons-round { color: var(--primary); }
+.option-tile span.tile-label { font-size: 13px; font-weight: 600; color: var(--text-main); }
+/* Hide the native radio visually but keep it accessible */
+.option-tile input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+
+/* =========================================================
+   12. SOS SUBMIT BUTTON (Giant Pulsating Red)
+   ========================================================= */
+.btn-sos-xl {
+    width: 100%;
+    padding: 32px 24px;
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 24px;
+    color: #fff;
+    cursor: pointer;
+    background: linear-gradient(135deg, #EF4444, #B91C1C);
+    box-shadow: 0 10px 40px rgba(239,68,68,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: sosPulseBig 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.btn-sos-xl:hover { 
+    transform: scale(1.02) translateY(-4px); 
+    box-shadow: 0 15px 50px rgba(239,68,68,0.7); 
+    background: linear-gradient(135deg, #F87171, #DC2626);
+}
+.btn-sos-xl:active {
+    transform: scale(0.98);
+}
+.btn-sos-xl .material-icons-round { 
+    font-size: 64px; 
+    margin-bottom: 4px;
+}
+
+@keyframes sosPulseBig {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
+    50%      { box-shadow: 0 0 0 25px rgba(239,68,68,0); }
+}
+
+/* =========================================================
+   13. ALERT CARD  (emergency alert rows)
+   ========================================================= */
+.alert-row-fire     { border-left: 4px solid #EF4444; }
+.alert-row-medical  { border-left: 4px solid #F59E0B; }
+.alert-row-intrusion{ border-left: 4px solid #8B5CF6; }
+.alert-row-other    { border-left: 4px solid #6B7280; }
+
+/* =========================================================
+   14. PINNED NOTICE STRIPE
+   ========================================================= */
+.notice-pinned { border-left: 4px solid #F59E0B; }
+.notice-regular { border-left: 4px solid var(--primary); }
+
+/* =========================================================
+   15. SEARCH / FILTER BAR
+   ========================================================= */
+.search-bar {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+}
+.search-bar input,
+.search-bar select { flex: 1; min-width: 180px; }
+
+/* =========================================================
+   16. POLL OPTION BUTTON
+   ========================================================= */
+.poll-option-btn {
+    width: 100%;
+    text-align: left;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--background);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+    color: var(--text-main);
+}
+.poll-option-btn:hover {
+    border-color: var(--primary);
+    background: rgba(79,70,229,0.05);
+}
+.poll-vote-count {
+    background: rgba(79,70,229,0.1);
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 99px;
+}
+
+/* =========================================================
+   17. FACILITY CARD
+   ========================================================= */
+.facility-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.facility-card .facility-hours {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+.facility-card .facility-hours .material-icons-round { font-size: 15px; }
+
+/* =========================================================
+   18. INVOICE ROW
+   ========================================================= */
+.invoice-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.invoice-amount { font-size: 20px; font-weight: 700; }
+.invoice-meta   { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+/* =========================================================
+   19. SECURITY STATUS CHIP
+   ========================================================= */
+.status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* =========================================================
+   20. QUICK LINK CARD  (dashboard action shortcuts)
+   ========================================================= */
+.quick-link-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    color: inherit;
+}
+.quick-link-card:hover { color: inherit; }
+.quick-link-card .qlc-icon { border-radius: 12px; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.quick-link-card h5 { color: var(--text-main); font-weight: 700; margin-bottom: 4px; }
+.quick-link-card p  { color: var(--text-muted); font-size: 13px; margin: 0; }
+.quick-link-card .qlc-arrow { margin-left: auto; color: var(--text-muted); }
+
+/* =========================================================
+   21. RESPONSIVE TWEAKS
+   ========================================================= */
+@media (max-width: 768px) {
+    .page-header        { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .invoice-row        { flex-direction: column; align-items: flex-start; }
+    .search-bar         { flex-direction: column; }
+    .search-bar input,
+    .search-bar select  { min-width: 100%; }
+    .es-table           { font-size: 13px; }
+}
+
+/* =========================================================
+   22.  ANIMATIONS & TRANSITIONS
+   ========================================================= */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.glass-card, .stat-card {
+    animation: fadeInUp 0.35s ease both;
+}
+/* Stagger children cards */
+.row > *:nth-child(1) .glass-card,
+.row > *:nth-child(1) .stat-card { animation-delay: 0s;    }
+.row > *:nth-child(2) .glass-card,
+.row > *:nth-child(2) .stat-card { animation-delay: 0.05s; }
+.row > *:nth-child(3) .glass-card,
+.row > *:nth-child(3) .stat-card { animation-delay: 0.1s;  }
+.row > *:nth-child(4) .glass-card,
+.row > *:nth-child(4) .stat-card { animation-delay: 0.15s; }
+
+/* Pulse the SOS emergency sidebar item */
+@keyframes sosPulse {
+    0%, 100% { box-shadow: none; }
+    50%       { box-shadow: 0 0 0 6px rgba(239,68,68,0.15); }
+}
+.nav-link.sos-link {
+    background-color: rgba(239,68,68,0.1) !important;
+    color: #EF4444 !important;
+    animation: sosPulse 2.5s ease-in-out infinite;
+}
+
+/* Shimmer loading state (optional, JS-triggered) */
+@keyframes shimmer {
+    0%   { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+}
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+    background-size: 400px 100%;
+    animation: shimmer 1.2s infinite linear;
+    border-radius: 8px;
+}
+
+/* =========================================================
+   23. TOAST / FLASH MESSAGE OVERRIDES
+   ========================================================= */
+.alert-messages .alert {
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+}

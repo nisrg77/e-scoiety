@@ -1,0 +1,78 @@
+{% extends 'resident_base.html' %}
+
+{% block title %}My Complaints | eSociety{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-extrabold text-on-surface tracking-tight">My Complaints</h2>
+            <p class="text-sm text-on-surface-variant font-medium mt-1">Track issues and requests</p>
+        </div>
+        <a href="{% url 'raise_complaint' %}" class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 active:scale-95 transition-all">
+            <span class="material-symbols-outlined">add</span>
+        </a>
+    </div>
+
+    <!-- Complaints List -->
+    {% if complaints %}
+    <div class="space-y-4">
+        {% for complaint in complaints %}
+        <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/10 flex flex-col group relative overflow-hidden">
+            {% if complaint.status|lower == 'open' %}
+            <div class="absolute top-0 right-0 w-2 h-full bg-amber-500"></div>
+            {% elif complaint.status|lower == 'in_progress' %}
+            <div class="absolute top-0 right-0 w-2 h-full bg-blue-500"></div>
+            {% elif complaint.status|lower == 'resolved' %}
+            <div class="absolute top-0 right-0 w-2 h-full bg-green-500"></div>
+            {% else %}
+            <div class="absolute top-0 right-0 w-2 h-full bg-slate-500"></div>
+            {% endif %}
+
+            <div class="flex justify-between items-start gap-4 mb-2">
+                <div>
+                    <h3 class="font-bold text-on-surface text-base leading-tight">{{ complaint.title }}</h3>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">{{ complaint.get_category_display }}</span>
+                        <span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+                        <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">{{ complaint.created_at|date:"M d, Y" }}</span>
+                    </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest whitespace-nowrap
+                    {% if complaint.status|lower == 'open' %}bg-amber-100 text-amber-800
+                    {% elif complaint.status|lower == 'in_progress' %}bg-blue-100 text-blue-800
+                    {% elif complaint.status|lower == 'resolved' %}bg-green-100 text-green-800
+                    {% else %}bg-slate-100 text-slate-600{% endif %}">
+                    {{ complaint.get_status_display }}
+                </span>
+            </div>
+
+            <p class="text-sm text-on-surface-variant leading-relaxed">{{ complaint.description|truncatewords:20 }}</p>
+
+            {% if complaint.resolution_remarks %}
+            <div class="bg-surface-container p-3 rounded-xl flex items-start gap-2 mt-4">
+                <span class="material-symbols-outlined text-primary mt-0.5" style="font-size: 16px;">comment</span>
+                <p class="text-xs text-on-surface-variant leading-relaxed">
+                    <strong class="text-on-surface">Admin:</strong> {{ complaint.resolution_remarks }}
+                </p>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="bg-surface-container-lowest p-8 rounded-3xl shadow-sm border border-outline-variant/10 flex flex-col items-center justify-center text-center mt-8">
+        <div class="w-16 h-16 bg-secondary-fixed text-on-secondary-fixed-variant rounded-full flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-3xl">thumb_up</span>
+        </div>
+        <h3 class="text-xl font-bold text-on-surface mb-2">No Complaints Yet</h3>
+        <p class="text-sm text-on-surface-variant mb-6 mw-xs">You haven't raised any complaints. We hope everything is great!</p>
+        <a href="{% url 'raise_complaint' %}" class="py-3 px-6 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary font-semibold text-sm shadow-lg shadow-primary/20 active:scale-[0.98] transition-all">
+            Raise a Complaint
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

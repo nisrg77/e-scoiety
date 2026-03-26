@@ -1,0 +1,24 @@
+## Proposed Changes: Visitors App
+
+### visitors/models.py
+Define the `Visitor` model to track who is entering the society:
+- `resident` (ForeignKey to `residents.ResidentProfile`, the host)
+- `name` (CharField)
+- `phone` (CharField)
+- `purpose` (CharField)
+- `vehicle_number` (CharField, blank=True)
+- `entry_time` (DateTimeField)
+- `exit_time` (DateTimeField, blank=True, null=True)
+- `status` (CharField choices: `pending`, `approved`, `rejected`, `entered`, `exited`)
+
+### visitors/services.py
+Create business logic functions:
+- `create_visitor_request(resident_id, visitor_data)`
+- `update_visitor_status(visitor_id, status)` (e.g., Security marks them as 'entered' or 'exited')
+- `get_expected_visitors()` (For security dashboard)
+- `get_resident_visitors(resident_id)` (For resident dashboard)
+
+### visitors/views.py & visitors/urls.py
+Implement views that utilize the services:
+- **Resident**: `add_visitor_view`, `my_visitors_view`
+- **Security**: `security_visitor_log_view` (Update status)

@@ -1,0 +1,65 @@
+{% extends 'resident_base.html' %}
+
+{% block title %}My Visitors | eSociety{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-extrabold text-on-surface tracking-tight">My Visitors</h2>
+            <p class="text-sm text-on-surface-variant font-medium mt-1">Expected guests and latest entries</p>
+        </div>
+        <a href="{% url 'add_visitor' %}" class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 active:scale-95 transition-all">
+            <span class="material-symbols-outlined">add</span>
+        </a>
+    </div>
+
+    <!-- Visitors List -->
+    {% if visitors %}
+    <div class="space-y-4">
+        {% for visitor in visitors %}
+        <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/10 flex items-center justify-between group block">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center font-bold text-lg">
+                    {{ visitor.name|make_list|first|upper }}
+                </div>
+                <div>
+                    <h3 class="font-bold text-on-surface">{{ visitor.name }}</h3>
+                    <p class="text-xs text-on-surface-variant font-medium mt-0.5">
+                        {{ visitor.purpose }} • {{ visitor.phone }}
+                    </p>
+                    {% if visitor.vehicle_number %}
+                    <p class="text-[10px] text-outline mt-1 uppercase tracking-widest"><span class="font-semibold">Vehicle:</span> {{ visitor.vehicle_number }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="flex flex-col items-end gap-2">
+                {% if visitor.status|lower == 'expected' %}
+                <span class="px-2.5 py-1 rounded-md bg-amber-100 text-amber-800 text-[10px] font-bold uppercase tracking-widest">Expected</span>
+                {% elif visitor.status|lower == 'entered' %}
+                <span class="px-2.5 py-1 rounded-md bg-green-100 text-green-800 text-[10px] font-bold uppercase tracking-widest">Entered</span>
+                {% elif visitor.status|lower == 'exited' %}
+                <span class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-widest">Exited</span>
+                {% else %}
+                <span class="px-2.5 py-1 rounded-md bg-blue-100 text-blue-800 text-[10px] font-bold uppercase tracking-widest">{{ visitor.status|default:"Expected" }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="bg-surface-container-lowest p-8 rounded-3xl shadow-sm border border-outline-variant/10 flex flex-col items-center justify-center text-center mt-8">
+        <div class="w-16 h-16 bg-secondary-fixed text-on-secondary-fixed-variant rounded-full flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-3xl">emoji_people</span>
+        </div>
+        <h3 class="text-xl font-bold text-on-surface mb-2">No Visitors Yet</h3>
+        <p class="text-sm text-on-surface-variant mb-6 mw-xs">Pre-approve your guests so security can securely verify them at the main gate.</p>
+        <a href="{% url 'add_visitor' %}" class="py-3 px-6 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary font-semibold text-sm shadow-lg shadow-primary/20 active:scale-[0.98] transition-all">
+            Add a Visitor
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

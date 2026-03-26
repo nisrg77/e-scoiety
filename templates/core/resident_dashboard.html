@@ -1,0 +1,122 @@
+{% extends 'resident_base.html' %}
+
+{% block title %}Dashboard | eSociety{% endblock %}
+
+{% block content %}
+<!-- Welcome Section (Visual Anchor) -->
+<section class="space-y-1">
+    <p class="label-sm text-on-surface-variant font-medium tracking-widest uppercase text-[10px]">Your Dashboard</p>
+    <h2 class="text-3xl font-extrabold tracking-tight text-on-surface">Sovereign Oversight</h2>
+</section>
+
+<!-- Hero Section: Expected Visitors (Glassmorphism) -->
+<section class="relative group">
+    <div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-tertiary/5 rounded-3xl blur-2xl -z-10"></div>
+    <div class="bg-white/70 glass-effect rounded-3xl p-6 shadow-[0_20px_40px_rgba(25,28,30,0.04)] border border-white/40">
+        <div class="flex justify-between items-start mb-6">
+            <div class="flex flex-col gap-1">
+                <span class="flex items-center gap-1.5 text-tertiary font-semibold text-xs tracking-wide">
+                    <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+                    MY VISITORS
+                </span>
+                <h3 class="text-xl font-bold text-on-surface">Manage Expected Guests</h3>
+                <p class="text-on-surface-variant text-sm">View or approve arriving visitors</p>
+            </div>
+            <div class="bg-primary-container/10 p-3 rounded-2xl">
+                <span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <a href="{% url 'add_visitor' %}" class="flex-1 py-3.5 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary font-semibold text-sm shadow-lg shadow-primary/20 active:scale-[0.98] transition-all text-center block w-full whitespace-nowrap">
+                Add Visitor
+            </a>
+            <a href="{% url 'my_visitors' %}" class="flex-1 py-3.5 rounded-xl bg-surface-container-high text-on-primary-fixed-variant font-semibold text-sm active:scale-[0.98] transition-all block text-center w-full">
+                View List
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Financials: My Dues Card -->
+<section class="grid grid-cols-1 gap-4">
+    <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_20px_40px_rgba(25,28,30,0.03)] flex items-center justify-between border border-outline-variant/10">
+        <div class="flex flex-col">
+            <span class="text-xs font-bold text-on-surface-variant tracking-wider uppercase opacity-60 mb-1">My Dues</span>
+            <span class="text-3xl font-extrabold text-on-surface">Check Invoices</span>
+        </div>
+        <a href="{% url 'my_invoices' %}" class="px-6 py-3 rounded-full bg-tertiary-container text-on-tertiary font-bold text-sm tracking-wide shadow-md shadow-tertiary/10 hover:opacity-90 active:scale-95 transition-all text-center">
+            Pay Now
+        </a>
+    </div>
+</section>
+
+<!-- Quick Actions Grid (Asymmetric Bento-ish Style) -->
+<section class="space-y-4">
+    <h4 class="text-sm font-bold text-on-surface-variant tracking-tight flex items-center gap-2">
+        <span class="w-1 h-4 bg-primary rounded-full"></span>
+        Quick Actions
+    </h4>
+    <div class="grid grid-cols-2 gap-4">
+        <!-- Large Feature Card -->
+        <a href="{% url 'facility_list' %}" class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/10 flex flex-col justify-between aspect-square hover:bg-surface-container-low transition-colors group block cursor-pointer">
+            <div class="w-12 h-12 bg-blue-50 text-blue-700 rounded-xl flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 0;">pool</span>
+            </div>
+            <div>
+                <p class="font-bold text-on-surface">Book Amenities</p>
+                <p class="text-[10px] text-on-surface-variant font-medium">Pool, Gym &amp; Courts</p>
+            </div>
+        </a>
+        <!-- Three smaller cards simulated through inner grid for asymmetry feel -->
+        <div class="grid grid-rows-2 gap-4">
+            <a href="{% url 'my_complaints' %}" class="bg-surface-container-lowest p-4 rounded-2xl shadow-sm border border-outline-variant/10 flex items-center gap-3 hover:bg-surface-container-low transition-colors block cursor-pointer">
+                <div class="w-10 h-10 bg-error/5 text-error rounded-lg flex items-center justify-center">
+                    <span class="material-symbols-outlined text-xl">report</span>
+                </div>
+                <span class="font-bold text-sm text-on-surface">Complaints</span>
+            </a>
+            <a href="{% url 'notice_board' %}" class="bg-surface-container-lowest p-4 rounded-2xl shadow-sm border border-outline-variant/10 flex items-center gap-3 hover:bg-surface-container-low transition-colors block cursor-pointer">
+                <div class="w-10 h-10 bg-tertiary/5 text-tertiary rounded-lg flex items-center justify-center">
+                    <span class="material-symbols-outlined text-xl">campaign</span>
+                </div>
+                <span class="font-bold text-sm text-on-surface">Notices</span>
+            </a>
+        </div>
+    </div>
+    <!-- Long Action Card -->
+    <a href="{% url 'poll_list' %}" class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/10 flex items-center justify-between hover:bg-surface-container-low transition-colors block cursor-pointer w-full mt-4">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">how_to_vote</span>
+            </div>
+            <div>
+                <p class="font-bold text-on-surface">Community Polls</p>
+                <p class="text-xs text-on-surface-variant">Have your say on society decisions</p>
+            </div>
+        </div>
+        <span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+    </a>
+</section>
+
+<!-- Resident Status Blade Example -->
+<section class="space-y-4">
+    <h4 class="text-sm font-bold text-on-surface-variant tracking-tight flex items-center gap-2">
+        <span class="w-1 h-4 bg-tertiary rounded-full"></span>
+        Community Pulse
+    </h4>
+    <div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant/10 flex">
+        <div class="w-1.5 bg-tertiary h-full"></div>
+        <div class="p-5 flex-1 flex items-center justify-between">
+            <div class="flex flex-col">
+                <p class="text-sm font-bold text-on-surface">Upcoming Event</p>
+                <p class="text-xs text-on-surface-variant">Monsoon Potluck Dinner • Sat, 7 PM</p>
+            </div>
+            <div class="flex -space-x-3">
+                <img alt="Resident attendee" class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Close up portrait of a young man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDR33KTWmL6WwnSe1Fin99_C0x40Cy5z2sydarK4vbenwJHchN-c2S-lszwe-Xeja_B9k9HzZz97Hc39KeOs1X60L9-N1vyGHrhe36PMc_Dup-RitueaZ3mYh84eirM6Dbg3WYycfzlTmuIrYRIQo8ECnmFrJE1Oc_j7AYIxIPoBlGCMpeq90JllSknOBW_Fhydhox0uuKKQTMfIYtJp_YeBt_XHAkywal4nsECe-3pcERfx4uKokFuzo3CxZY0375_JJAJDU5v3kDO"/>
+                <img alt="Resident attendee" class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="Portrait of a smiling professional man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMkjHvByFMHAO4dXRfhAWZemGz_0qH4TMQ4slahCpw6CkjnnLzbJDNDEMr3Y_0tVCjAghew0-6ibead-ZjWl97nBoOAbcCS5ZfdjxBj0oteH8AxZkooIWjUSLTXOzHeWdq7F0ab2WCQ777YAYEYnSXE6-QJK49DtNI1EM97rwqxzpV35nERibCkEfRX1BZR5YPJifAt85SIc5SAoCf_RWdMV1tWbMVkO3thsVz7eJ5tnpTjEMo8vZgkUnQaWeLJHdXBWi7V7vCmsQb"/>
+                <div class="w-8 h-8 rounded-full border-2 border-white bg-surface-container-high flex items-center justify-center text-[10px] font-bold">+12</div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

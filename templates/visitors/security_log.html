@@ -1,0 +1,122 @@
+{% extends 'security_base.html' %}
+{% block title %}Visitor Log | Security | eSociety{% endblock %}
+{% block page_title %}Visitor Gateway{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+            <h2 class="text-2xl font-bold tracking-tight text-on-surface">Visitor Log</h2>
+            <p class="text-on-surface-variant text-sm mt-1">Track expected visitors and manage society entry/exit gates.</p>
+        </div>
+        
+        {% if visitors %}
+        <!-- Expected Count Badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-2 bg-tertiary/10 border border-tertiary/20 text-tertiary-dark rounded-xl font-bold text-sm shadow-sm backdrop-blur-md">
+            <span class="material-symbols-outlined text-[18px]">group</span>
+            {{ visitors|length }} Expected Today
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Visitor List -->
+    {% if visitors %}
+    <div class="grid grid-cols-1 gap-4">
+        {% for visitor in visitors %}
+        <div class="bg-surface/80 backdrop-blur-md rounded-2xl border border-outline-variant/30 p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+                
+                <!-- Visitor Info -->
+                <div class="flex items-center gap-4 flex-1">
+                    <!-- Avatar Badge -->
+                    <div class="w-12 h-12 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-bold text-xl flex-shrink-0">
+                        {{ visitor.name|make_list|first|upper }}
+                    </div>
+                    
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h3 class="text-base font-bold text-on-surface truncate">{{ visitor.name }}</h3>
+                            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-surface-container text-on-surface uppercase tracking-wide border border-outline-variant/50">
+                                {{ visitor.purpose }}
+                            </span>
+                        </div>
+                        
+                        <!-- Metadata Grid -->
+                        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-medium text-on-surface-variant">
+                            <div class="flex items-center gap-1.5 px-2 py-1 bg-primary/5 rounded-md text-primary-dark">
+                                <span class="material-symbols-outlined text-[14px]">apartment</span>
+                                Flat {{ visitor.resident.flat.flat_number|default:"—" }}
+                            </div>
+                            
+                            <div class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[14px]">phone</span>
+                                {{ visitor.phone }}
+                            </div>
+                            
+                            {% if visitor.vehicle_number %}
+                            <div class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[14px]">directions_car</span>
+                                {{ visitor.vehicle_number }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Update Form -->
+                <div class="bg-surface-container-lowest/50 p-3 rounded-xl border border-outline-variant/50 w-full xl:w-auto">
+                    <form method="POST" class="flex flex-col sm:flex-row sm:items-center gap-3">
+                        {% csrf_token %}
+                        <input type="hidden" name="visitor_id" value="{{ visitor.id }}">
+                        
+                        <!-- Current Status Badge -->
+                        <div class="flex-shrink-0">
+                            {% if visitor.status == 'expected' %}
+                                <span class="px-3 py-1.5 rounded-lg text-xs font-bold bg-tertiary/10 text-tertiary border border-tertiary/20 flex items-center gap-1.5 w-fit">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Expected
+                                </span>
+                            {% elif visitor.status == 'entered' %}
+                                <span class="px-3 py-1.5 rounded-lg text-xs font-bold bg-secondary/10 text-secondary-dark border border-secondary/20 flex items-center gap-1.5 w-fit">
+                                    <span class="material-symbols-outlined text-[14px]">login</span> Entered
+                                </span>
+                            {% else %}
+                                <span class="px-3 py-1.5 rounded-lg text-xs font-bold bg-outline/10 text-on-surface-variant border border-outline/20 flex items-center gap-1.5 w-fit">
+                                    <span class="material-symbols-outlined text-[14px]">logout</span> Exited
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Select & Submit -->
+                        <div class="flex flex-1 sm:flex-none gap-2">
+                            <select name="status" class="flex-1 w-full bg-surface border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none appearance-none cursor-pointer">
+                                <option value="expected" {% if visitor.status == 'expected' %}selected{% endif %}>Expected</option>
+                                <option value="entered"  {% if visitor.status == 'entered' %}selected{% endif %}>Entered (Inside)</option>
+                                <option value="exited"   {% if visitor.status == 'exited' %}selected{% endif %}>Exited (Left)</option>
+                            </select>
+                            
+                            <button type="submit" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-sm active:scale-95 flex-shrink-0 flex items-center justify-center">
+                                Update
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="bg-surface/80 backdrop-blur-md rounded-3xl border border-outline-variant/30 p-12 text-center shadow-sm">
+        <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">how_to_reg</span>
+        </div>
+        <h3 class="text-xl font-bold text-on-surface mb-2">No Expected Visitors</h3>
+        <p class="text-on-surface-variant max-w-sm mx-auto">
+            There are no pre-approved visitors waiting at the gate today.
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

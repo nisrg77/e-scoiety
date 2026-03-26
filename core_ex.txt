@@ -1,0 +1,55 @@
+# eSociety Core App Architecture & Workflow Explanation
+
+The `core` app handles the fundamental user authentication and role-based access control (RBAC) for the eSociety Management System. It is built to be simple and uses standard Django authentication mechanisms with a custom User model.
+
+Below is an explanation of each major file and how they work together:
+
+## 1. models.py - The Data Structure
+The `User` model defines what a user is in the database. 
+- It inherits from `AbstractBaseUser` meaning we are completely replacing Django's default username/password system with our own.
+- **Key Fields**:
+  - `email`: Used as the primary login field instead of a username.
+  - `role`: A dropdown choice (`admin`, `resident`, `security_guard`) that defines what the user is allowed to do.
+- **Workflow**: When someone registers, a new `User` record is created here. Django uses the `UserManager` class to securely hash their password before saving.
+
+## 2. forms.py - User Input Handling
+Forms are used to validate data sent from the HTML templates before trying to save it to the database.
+- `UserSignupForm`: Inherits from Django's built-in `UserCreationForm`. It handles rendering the registration form and securely checking that the two passwords match. It knows to pull the `email`, `role`, `password1`, and `password2` fields based on the `User` model.
+- `UserLoginForm`: A simple form to validate the `email` and `password` on the login screen.
+- **Workflow**: When a user clicks "Submit" on a webpage, the data hits these forms first. If the data is bad (e.g. passwords don't match, or the email is already in use), the form throws an error back to the user without touching the database.
+
+## 3. views.py - The Application Logic
+Views act as the brain. They connect the URLs to the Forms, and the Forms to the Models/Templates.
+- `userSignupView`: 
+  1. Checks if the user submitted the signup form (POST request).
+  2. Passes the data to `UserSignupForm`.
+  3. If valid, sends a welcome email (`send_mail`), saves the user to the database, and redirects them to the login page.
+- `userLoginView`:
+  1. Takes the submitted email and password.
+  2. Uses Django's `authenticate()` method to verify the credentials against the database.
+  3. If true, logs them in (`login()`).
+  4. Checks the user's `role` field. If `admin`, redirects to the Admin Dashboard. If `resident`, Resident Dashboard. If `security`, Security Dashboard.
+- **Workflow**: Views dictate the user journey. They decide what HTML template to show and what happens when buttons are clicked.
+
+## 4. urls.py - The Router
+This file simply maps web addresses (URLs) to their corresponding Python functions in `views.py`.
+- e.g. If a user visits `http://127.0.0.1:8000/signup/`, this file tells Django to run the `userSignupView` function.
+
+## 5. templates/core/ - The Frontend
+These are the HTML files that the user actually sees.
+- `signup.html` & `login.html`: Contain the HTML `<form>` tags. They use `{{ form }}` to magically render the input fields defined in `forms.py`.
+- `admin_dashboard.html`, `resident_dashboard.html`, `security_dashboard.html`: The protected pages users see after successfully logging in.
+
+---
+
+### Summary of a Complete Workflow (The User Journey)
+
+1. A brand new user types `http://127.0.0.1:8000/signup/` into their browser.
+2. `urls.py` catches `/signup/` and routes the request to `userSignupView` in `views.py`.
+3. `userSignupView` loads a blank `UserSignupForm` (from `forms.py`) and sends it to the `signup.html` template.
+4. The user fills out their Email, selects "Resident" as their Role, types a Password, and clicks Submit.
+5. The form data is sent back to `userSignupView`. 
+6. `UserSignupForm` validates the data. It verifies the email is unique and the passwords match.
+7. The view saves the data to the database as a new `User` (in `models.py`), sends a confirmation email, and redirects the browser to `/login/`.
+8. The user types their new credentials into the login page.
+9. `userLoginView` authenticates the credentials. It checks the user's `role` in the database, sees that it is "resident", and redirects the user to `/resident_dashboard/`.

@@ -1,0 +1,14 @@
+## Proposed Changes: Security App 
+**Goal:** Emergency alerts.
+
+### security/models.py
+- `EmergencyAlert`: `resident` (FK to `ResidentProfile`), `type` (`fire`, `medical`, `security_breach`), `description`, `timestamp`, `status` (`active`, `resolved`)
+
+### security/services.py
+- `raise_emergency(resident_id, alert_type, description)`
+- `get_active_emergencies()` (For security dashboard)
+- `resolve_emergency(alert_id)`
+
+### security/views.py & security/urls.py
+- `raise_emergency_view`
+- `security_alert_dashboard_view`

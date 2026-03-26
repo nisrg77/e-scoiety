@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to eSociety | Community Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-dark: #3730A3;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #10B981 0%, #4F46E5 60%, #3730A3 100%);
+            display: flex;
+            flex-direction: column;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        /* Animated background blobs */
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.25;
+            animation: blobFloat 8s ease-in-out infinite alternate;
+            z-index: 0;
+        }
+        body::before {
+            width: 400px; height: 400px;
+            background: #818CF8;
+            top: -100px; left: -100px;
+        }
+        body::after {
+            width: 300px; height: 300px;
+            background: #6EE7B7;
+            bottom: -80px; right: -80px;
+            animation-delay: -3s;
+        }
+        @keyframes blobFloat {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 20px) scale(1.1); }
+        }
+        .navbar {
+            z-index: 10;
+            padding: 24px 40px;
+            background: transparent;
+        }
+        .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .navbar-brand .material-icons-round {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 8px;
+        }
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 10px 24px !important;
+            border-radius: 10px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .btn-nav-login {
+            background: white;
+            color: var(--primary) !important;
+            font-weight: 600;
+            margin-left: 10px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+        }
+        .btn-nav-login:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        .hero-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 10;
+            padding: 40px 20px;
+        }
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 24px;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .hero-content p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto 40px auto;
+            line-height: 1.6;
+        }
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+        .hero-buttons .btn {
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 14px 32px;
+            border-radius: 12px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .btn-get-started {
+            background: white;
+            color: var(--primary) !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border: none;
+        }
+        .btn-get-started:hover {
+            background: #f8f9fa;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            color: var(--primary-dark) !important;
+        }
+        .btn-outline-light {
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            color: white !important;
+        }
+        .btn-outline-light:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-3px);
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg d-flex justify-content-between align-items-center w-100">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <span class="material-icons-round">apartment</span>
+            eSociety
+        </a>
+        <div class="d-flex align-items-center">
+            <a class="nav-link" href="{% url 'signup' %}">Create Account</a>
+            <a class="nav-link btn-nav-login" href="{% url 'login' %}">Sign In</a>
+        </div>
+    </nav>
+
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1>Elevate Your Community Living</h1>
+            <p>Experience seamless communication, transparent operations, and enhanced security with our modern residential management solution.</p>
+            <div class="hero-buttons">
+                <a href="{% url 'signup' %}" class="btn btn-get-started gap-2">
+                    Register Society
+                    <span class="material-icons-round fs-5">arrow_forward</span>
+                </a>
+                <a href="{% url 'login' %}" class="btn btn-outline-light">
+                    Resident Login
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

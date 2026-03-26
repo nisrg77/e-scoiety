@@ -1,0 +1,254 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Admin Dashboard | The Sovereign Oversight{% endblock %}
+{% block page_title %}Overview{% endblock %}
+
+{% block content %}
+<!-- Page Content -->
+<div class="mt-20 px-6 pt-8 max-w-7xl mx-auto space-y-8">
+<!-- Welcome Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="text-[2.75rem] font-headline font-bold leading-tight tracking-tight text-on-surface">Society Administrator Overview</h2>
+<p class="text-on-surface-variant text-lg mt-2">Welcome back, Chief. Here is the vital health status of the estate.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-3 bg-white border border-outline-variant/20 rounded-full font-semibold text-sm shadow-sm hover:bg-surface-container-low transition-all">
+                        Download Report
+                    </button>
+<button class="px-6 py-3 bg-gradient-to-br from-primary to-primary-container text-white rounded-full font-semibold text-sm shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                        Generate Invoice
+                    </button>
+</div>
+</section>
+<!-- Stats Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Total Collections -->
+<div class="bg-surface-container-lowest p-8 rounded-lg shadow-[0_12px_40px_rgba(25,28,31,0.04)] relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
+<div class="flex justify-between items-start mb-6">
+<div class="p-3 bg-primary/10 rounded-2xl">
+<span class="material-symbols-outlined text-primary" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<span class="text-green-500 text-sm font-bold flex items-center bg-green-50 px-2 py-1 rounded-lg">
+<span class="material-symbols-outlined text-xs mr-1" data-icon="trending_up">trending_up</span>
+                            +12%
+                        </span>
+</div>
+<p class="text-on-surface-variant text-sm font-medium uppercase tracking-widest">Total Collections</p>
+<h3 class="text-4xl font-headline font-extrabold text-on-surface mt-2">₹{{ total_revenue|default:0 }}</h3>
+<div class="mt-6 w-full h-1 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[85%] rounded-full"></div>
+</div>
+</div>
+<!-- Active Tasks -->
+<div class="bg-surface-container-lowest p-8 rounded-lg shadow-[0_12px_40px_rgba(25,28,31,0.04)] relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
+<div class="flex justify-between items-start mb-6">
+<div class="p-3 bg-secondary/10 rounded-2xl">
+<span class="material-symbols-outlined text-secondary" data-icon="build" style="font-variation-settings: 'FILL' 1;">build</span>
+</div>
+<span class="text-secondary text-xs font-bold bg-secondary-fixed px-2 py-1 rounded-lg">Urgent</span>
+</div>
+<p class="text-on-surface-variant text-sm font-medium uppercase tracking-widest">Active Facility Bookings</p>
+<h3 class="text-4xl font-headline font-extrabold text-on-surface mt-2">{{ active_bookings|default:0 }}</h3>
+<p class="mt-4 text-xs text-on-surface-variant flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-error"></span> Approved Bookings
+                    </p>
+</div>
+<!-- Pending Approvals -->
+<div class="bg-surface-container-lowest p-8 rounded-lg shadow-[0_12px_40px_rgba(25,28,31,0.04)] relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-tertiary/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
+<div class="flex justify-between items-start mb-6">
+<div class="p-3 bg-tertiary/10 rounded-2xl">
+<span class="material-symbols-outlined text-tertiary" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+</div>
+<p class="text-on-surface-variant text-sm font-medium uppercase tracking-widest">Total Residents</p>
+<h3 class="text-4xl font-headline font-extrabold text-on-surface mt-2">{{ total_residents|default:0 }}</h3>
+<p class="mt-4 text-xs text-on-surface-variant">Registered in Society</p>
+</div>
+</section>
+<!-- Main Analytics Grid -->
+<section class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+<!-- Financial Performance Chart -->
+<div class="lg:col-span-3 bg-surface-container-lowest rounded-lg p-8 shadow-[0_12px_40px_rgba(25,28,31,0.04)]">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h3 class="text-xl font-headline font-bold">Financial Performance</h3>
+<p class="text-sm text-on-surface-variant">Monthly Income vs. Expense analysis</p>
+</div>
+<div class="flex gap-2">
+<span class="flex items-center gap-2 text-xs font-bold text-primary">
+<span class="w-3 h-3 rounded-full bg-primary"></span> Income
+                            </span>
+<span class="flex items-center gap-2 text-xs font-bold text-secondary">
+<span class="w-3 h-3 rounded-full bg-secondary"></span> Expense
+                            </span>
+</div>
+</div>
+<div class="h-64 flex items-end justify-between gap-4 px-4 pt-4 border-l border-b border-surface-container-high">
+<!-- Chart Bars Placeholder -->
+<div class="w-full flex items-end justify-around h-full gap-2">
+<div class="flex flex-col items-center gap-1 w-full max-w-[40px]">
+<div class="w-full bg-primary rounded-t-lg" style="height: 60%"></div>
+<div class="w-full bg-secondary rounded-t-lg" style="height: 40%"></div>
+<span class="text-[10px] text-on-surface-variant mt-2 font-bold">JAN</span>
+</div>
+<div class="flex flex-col items-center gap-1 w-full max-w-[40px]">
+<div class="w-full bg-primary rounded-t-lg" style="height: 75%"></div>
+<div class="w-full bg-secondary rounded-t-lg" style="height: 35%"></div>
+<span class="text-[10px] text-on-surface-variant mt-2 font-bold">FEB</span>
+</div>
+<div class="flex flex-col items-center gap-1 w-full max-w-[40px]">
+<div class="w-full bg-primary rounded-t-lg" style="height: 55%"></div>
+<div class="w-full bg-secondary rounded-t-lg" style="height: 45%"></div>
+<span class="text-[10px] text-on-surface-variant mt-2 font-bold">MAR</span>
+</div>
+<div class="flex flex-col items-center gap-1 w-full max-w-[40px]">
+<div class="w-full bg-primary rounded-t-lg" style="height: 90%"></div>
+<div class="w-full bg-secondary rounded-t-lg" style="height: 30%"></div>
+<span class="text-[10px] text-on-surface-variant mt-2 font-bold">APR</span>
+</div>
+<div class="flex flex-col items-center gap-1 w-full max-w-[40px]">
+<div class="w-full bg-primary rounded-t-lg" style="height: 80%"></div>
+<div class="w-full bg-secondary rounded-t-lg" style="height: 50%"></div>
+<span class="text-[10px] text-on-surface-variant mt-2 font-bold">MAY</span>
+</div>
+<div class="flex flex-col items-center gap-1 w-full max-w-[40px]">
+<div class="w-full bg-primary rounded-t-lg" style="height: 100%"></div>
+<div class="w-full bg-secondary rounded-t-lg" style="height: 25%"></div>
+<span class="text-[10px] text-on-surface-variant mt-2 font-bold">JUN</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Resident Satisfaction Index -->
+<div class="lg:col-span-2 bg-surface-container-lowest rounded-lg p-8 shadow-[0_12px_40px_rgba(25,28,31,0.04)] flex flex-col justify-between">
+<div>
+<h3 class="text-xl font-headline font-bold">Resident Satisfaction</h3>
+<p class="text-sm text-on-surface-variant">Service quality Heatmap</p>
+</div>
+<div class="grid grid-cols-3 grid-rows-3 gap-2 py-6">
+<div class="h-16 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xs">Security</div>
+<div class="h-16 bg-primary-container rounded-xl flex items-center justify-center text-on-primary-container font-bold text-xs">Gym</div>
+<div class="h-16 bg-secondary-container rounded-xl flex items-center justify-center text-on-secondary-container font-bold text-xs">Pool</div>
+<div class="h-16 bg-primary/80 rounded-xl flex items-center justify-center text-white font-bold text-xs">Garden</div>
+<div class="h-16 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xs">Waste</div>
+<div class="h-16 bg-tertiary-fixed rounded-xl flex items-center justify-center text-on-tertiary-fixed font-bold text-xs">Parking</div>
+<div class="h-16 bg-primary-container rounded-xl flex items-center justify-center text-on-primary-container font-bold text-xs">Lobby</div>
+<div class="h-16 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xs">App</div>
+<div class="h-16 bg-primary/90 rounded-xl flex items-center justify-center text-white font-bold text-xs">Staff</div>
+</div>
+<div class="flex justify-between items-center pt-4 border-t border-surface-container-high">
+<span class="text-3xl font-bold text-on-surface">4.8<span class="text-sm text-on-surface-variant font-normal">/5.0</span></span>
+<div class="flex text-tertiary">
+<span class="material-symbols-outlined" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" data-icon="star_half">star_half</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Activity & Tickets Section -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Recent Activities -->
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<h3 class="text-xl font-headline font-bold">Recent Activities</h3>
+<button class="text-primary text-sm font-bold hover:underline">View All</button>
+</div>
+<div class="space-y-4">
+<div class="bg-white p-4 rounded-xl shadow-sm flex items-start gap-4">
+<div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-green-600" data-icon="person_add">person_add</span>
+</div>
+<div>
+<p class="text-sm font-semibold">New Member Joined</p>
+<p class="text-xs text-on-surface-variant">John Doe registered in Block B - 402</p>
+<p class="text-[10px] text-outline mt-1 uppercase font-bold">2 hours ago</p>
+</div>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm flex items-start gap-4">
+<div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-blue-600" data-icon="task_alt">task_alt</span>
+</div>
+<div>
+<p class="text-sm font-semibold">Maintenance Resolved</p>
+<p class="text-xs text-on-surface-variant">Elevator repair in Wing A successfully completed.</p>
+<p class="text-[10px] text-outline mt-1 uppercase font-bold">5 hours ago</p>
+</div>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm flex items-start gap-4">
+<div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-amber-600" data-icon="campaign">campaign</span>
+</div>
+<div>
+<p class="text-sm font-semibold">Notice Posted</p>
+<p class="text-xs text-on-surface-variant">Annual General Meeting scheduled for June 25th.</p>
+<p class="text-[10px] text-outline mt-1 uppercase font-bold">Yesterday</p>
+</div>
+</div>
+</div>
+</div>
+<!-- High Priority Tickets -->
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<h3 class="text-xl font-headline font-bold">Priority Support Tickets</h3>
+<span class="bg-error-container text-on-error-container text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-tighter">Needs Attention</span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-2 space-y-2">
+<div class="bg-white p-5 rounded-xl flex items-center justify-between group cursor-pointer hover:shadow-md transition-all">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center">
+<span class="material-symbols-outlined text-error" data-icon="emergency_home">emergency_home</span>
+</div>
+<div>
+<h4 class="text-sm font-bold">Water Leakage - Unit 501</h4>
+<p class="text-xs text-on-surface-variant">Reported by Sarah Jenkins • 15 mins ago</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="bg-white p-5 rounded-xl flex items-center justify-between group cursor-pointer hover:shadow-md transition-all">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center">
+<span class="material-symbols-outlined text-error" data-icon="security">security</span>
+</div>
+<div>
+<h4 class="text-sm font-bold">Broken Gate Sensor</h4>
+<p class="text-xs text-on-surface-variant">Reported by Security Team • 1 hour ago</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="bg-white p-5 rounded-xl flex items-center justify-between group cursor-pointer hover:shadow-md transition-all">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center">
+<span class="material-symbols-outlined text-amber-500" data-icon="bolt">bolt</span>
+</div>
+<div>
+<h4 class="text-sm font-bold">Common Area Power Flickers</h4>
+<p class="text-xs text-on-surface-variant">Reported by Maintenance • 3 hours ago</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+
+<!-- Floating Action Buttons for quick admin tasks -->
+<div class="fixed bottom-24 right-6 md:bottom-8 z-50 flex flex-col gap-3">
+    <a href="{% url 'notice_board' %}" class="w-12 h-12 bg-white border border-outline-variant/20 rounded-full shadow-lg flex items-center justify-center text-primary group hover:w-32 transition-all overflow-hidden relative">
+        <span class="material-symbols-outlined absolute left-1/2 -translate-x-1/2 group-hover:left-3 group-hover:translate-x-0 transition-all z-10">post_add</span>
+        <span class="opacity-0 group-hover:opacity-100 absolute left-10 text-xs font-bold text-on-surface transition-opacity whitespace-nowrap z-0">Quick Post</span>
+    </a>
+    <a href="{% url 'expense_report' %}" class="w-14 h-14 bg-gradient-to-br from-primary to-primary-container rounded-full shadow-xl shadow-primary/30 flex items-center justify-center text-white active:scale-95 transition-all">
+        <span class="material-symbols-outlined text-2xl">print</span>
+    </a>
+</div>
+{% endblock %}

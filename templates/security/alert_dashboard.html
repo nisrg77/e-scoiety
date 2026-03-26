@@ -1,0 +1,100 @@
+{% extends 'security_base.html' %}
+{% block title %}Active Emergencies | eSociety{% endblock %}
+{% block page_title %}Active Alerts{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+            <h2 class="text-2xl font-bold tracking-tight text-on-surface flex items-center gap-2">
+                Active Emergencies
+                {% if alerts %}
+                <span class="animate-pulse w-3 h-3 bg-error rounded-full block"></span>
+                {% endif %}
+            </h2>
+            <p class="text-on-surface-variant text-sm mt-1">Monitor and resolve emergency alerts raised by residents.</p>
+        </div>
+        {% if alerts %}
+        <!-- Active Count Badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-2 bg-error/10 border border-error/20 text-error rounded-xl font-bold text-sm shadow-sm">
+            <span class="material-symbols-outlined text-[18px]">warning</span>
+            {{ alerts|length }} Active
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Alert List -->
+    {% if alerts %}
+    <div class="grid grid-cols-1 gap-4">
+        {% for alert in alerts %}
+        <div class="bg-surface/80 backdrop-blur-md rounded-2xl border-l-4 border-l-error border-y border-r border-outline-variant/30 p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+            
+            <!-- Background pulse for critical effect -->
+            <div class="absolute inset-0 bg-gradient-to-r from-error/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                <div class="flex-1">
+                    <div class="flex items-start gap-4">
+                        <!-- Icon -->
+                        <div class="w-12 h-12 rounded-xl bg-error/10 flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-error text-[24px]" style="font-variation-settings: 'FILL' 1;">
+                                {% if alert.alert_type == 'fire' %}local_fire_department
+                                {% elif alert.alert_type == 'medical' %}medical_services
+                                {% else %}security{% endif %}
+                            </span>
+                        </div>
+                        
+                        <!-- Info -->
+                        <div>
+                            <div class="flex items-center gap-3 flex-wrap mb-1">
+                                <h3 class="text-lg font-bold text-on-surface leading-tight">{{ alert.alert_type|title }} Emergency</h3>
+                                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-error text-white uppercase tracking-wider flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[12px]">schedule</span> {{ alert.created_at|timesince }} ago
+                                </span>
+                            </div>
+                            
+                            <div class="flex items-center gap-2 text-sm font-medium text-on-surface-variant mb-2">
+                                <span class="material-symbols-outlined text-[16px]">person</span>
+                                Raised by: <span class="text-on-surface">{{ alert.resident.user.email }}</span>
+                            </div>
+                            
+                            {% if alert.description %}
+                            <p class="text-sm border-l-2 border-outline-variant pl-3 text-on-surface-variant bg-surface-container-lowest/50 py-1.5 rounded-r-md">
+                                "{{ alert.description }}"
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action -->
+                <div class="md:w-auto">
+                    <form method="POST" class="w-full">
+                        {% csrf_token %}
+                        <input type="hidden" name="alert_id" value="{{ alert.id }}">
+                        <button type="submit" class="w-full md:w-auto flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg transition-all active:scale-95 group/btn" onclick="return confirm('Are you sure this emergency has been resolved and the area is safe?');">
+                            <span class="material-symbols-outlined text-[20px] transition-transform group-hover/btn:scale-110">check_circle</span>
+                            Mark Resolved
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Safe State -->
+    <div class="bg-surface/80 backdrop-blur-md rounded-3xl border border-secondary/20 p-12 text-center shadow-sm relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-secondary/5 to-transparent pointer-events-none"></div>
+        <div class="w-24 h-24 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-5 relative z-10">
+            <span class="material-symbols-outlined text-5xl text-secondary" style="font-variation-settings: 'FILL' 1;">shield</span>
+        </div>
+        <h3 class="text-2xl font-bold text-on-surface mb-2 relative z-10">All Clear</h3>
+        <p class="text-on-surface-variant max-w-sm mx-auto text-lg relative z-10">
+            There are no active emergency alerts. The society is currently safe and secure.
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

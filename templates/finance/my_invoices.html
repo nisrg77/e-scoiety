@@ -1,0 +1,72 @@
+{% extends 'resident_base.html' %}
+
+{% block title %}My Invoices | eSociety{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-extrabold text-on-surface tracking-tight">My Invoices</h2>
+            <p class="text-sm text-on-surface-variant font-medium mt-1">Track maintenance and dues</p>
+        </div>
+    </div>
+
+    <!-- Invoices List -->
+    {% if invoices %}
+    <div class="space-y-4">
+        {% for invoice in invoices %}
+        <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/10 flex flex-col group relative overflow-hidden">
+            {% if invoice.is_paid %}
+            <div class="absolute top-0 right-0 w-2 h-full bg-green-500"></div>
+            {% else %}
+            <div class="absolute top-0 right-0 w-2 h-full bg-error"></div>
+            {% endif %}
+
+            <div class="flex justify-between items-start gap-4 mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 {% if invoice.is_paid %}bg-green-100 text-green-600{% else %}bg-error-container text-on-error-container{% endif %} rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[24px]">{% if invoice.is_paid %}receipt{% else %}pending_actions{% endif %}</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-on-surface text-base leading-tight">{{ invoice.description|default:"Maintenance Invoice" }}</h3>
+                        <p class="text-xs text-on-surface-variant font-medium mt-1 uppercase tracking-widest"><span class="font-bold">Due:</span> {{ invoice.due_date|date:"M d, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-surface-container p-4 rounded-xl flex justify-between items-center mt-2">
+                <div class="flex flex-col">
+                    <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Amount</span>
+                    <span class="text-lg font-extrabold text-on-surface">₹{{ invoice.amount }}</span>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-widest
+                        {% if invoice.is_paid %}bg-green-100 text-green-800
+                        {% else %}bg-red-100 text-red-800{% endif %}">
+                        {% if invoice.is_paid %}Paid{% else %}Unpaid{% endif %}
+                    </span>
+                    
+                    {% if not invoice.is_paid %}
+                    <a href="{% url 'pay_invoice' invoice.id %}" class="px-5 py-2.5 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold text-sm shadow-lg shadow-primary/20 active:scale-[0.98] transition-all">
+                        Pay Now
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="bg-surface-container-lowest p-8 rounded-3xl shadow-sm border border-outline-variant/10 flex flex-col items-center justify-center text-center mt-8">
+        <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-3xl">check_circle</span>
+        </div>
+        <h3 class="text-xl font-bold text-on-surface mb-2">All Clear!</h3>
+        <p class="text-sm text-on-surface-variant mw-xs">You have no pending invoices. Great job staying up to date!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

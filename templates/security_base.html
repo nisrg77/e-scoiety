@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block sidebar_nav %}
+<a href="{% url 'security_dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'security_dashboard' %}active{% endif %}">
+    <span class="material-symbols-outlined">shield</span>
+    Dashboard
+</a>
+<a href="{% url 'security_alert_dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'security_alert_dashboard' %}active{% endif %}">
+    <span class="material-symbols-outlined">emergency</span>
+    Active Alerts
+</a>
+<a href="{% url 'security_visitor_log' %}" class="nav-item {% if request.resolver_match.url_name == 'security_visitor_log' %}active{% endif %}">
+    <span class="material-symbols-outlined">assignment</span>
+    Visitor Log
+</a>
+{% endblock %}
+
+{% block bottom_nav %}
+<a href="{% url 'security_dashboard' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'security_dashboard' %}active{% endif %}">
+    <span class="material-symbols-outlined">shield</span>
+    <span>Home</span>
+</a>
+<a href="{% url 'security_alert_dashboard' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'security_alert_dashboard' %}active{% endif %}">
+    <span class="material-symbols-outlined">emergency</span>
+    <span>Alerts</span>
+</a>
+<a href="{% url 'security_visitor_log' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'security_visitor_log' %}active{% endif %}">
+    <span class="material-symbols-outlined">assignment</span>
+    <span>Visitors</span>
+</a>
+{% endblock %}

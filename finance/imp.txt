@@ -1,0 +1,18 @@
+## Proposed Changes: Finance App 
+**Goal:** Track maintenance billing, invoices, and expense reports.
+
+### finance/models.py
+- `Invoice`: `resident` (FK to `ResidentProfile`), `month`, `year`, `amount`, `description` (e.g. "Monthly Maintenance"), `status` (`unpaid`, `paid`), `due_date`
+- `Payment`: `invoice` (FK), `amount_paid`, `payment_date`, `transaction_id`
+- `SocietyExpense`: `title`, `amount`, `date`, `category` (Maintenance, Salary, Electricity)
+
+### finance/services.py
+- `generate_monthly_invoices(year, month, amount)` (Admin)
+- `get_resident_invoices(resident_id)`
+- `record_payment(invoice_id, amount, transaction_id)`
+- `generate_expense_report(start_date, end_date)` (Admin)
+
+### finance/views.py & finance/urls.py
+- `my_invoices_view`
+- `pay_invoice_view`
+- `expense_report_view`

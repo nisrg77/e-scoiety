@@ -1,0 +1,84 @@
+{% extends 'resident_base.html' %}
+{% block title %}Register Vehicle | eSociety{% endblock %}
+{% block page_title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto space-y-4">
+    <a href="{% url 'resident_dashboard_data' %}" class="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary-dark transition-colors mb-2">
+        <span class="material-symbols-outlined text-[18px]">arrow_back</span> Back to Profile
+    </a>
+
+    <div class="bg-surface/80 backdrop-blur-md rounded-3xl border border-outline-variant/30 p-6 md:p-8 shadow-sm">
+        <div class="mb-6 flex flex-col items-center">
+            <div class="w-16 h-16 rounded-2xl bg-secondary/10 flex items-center justify-center mb-4 text-secondary-dark shadow-sm">
+                <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">directions_car</span>
+            </div>
+            <h3 class="text-2xl font-bold tracking-tight text-on-surface">Register Vehicle</h3>
+            <p class="text-on-surface-variant text-sm mt-1 text-center">Add your car or bike to get a parking slot assigned.</p>
+        </div>
+
+        <form method="POST" id="vehicleForm" class="space-y-5">
+            {% csrf_token %}
+            
+            <div>
+                <label class="block text-xs font-semibold text-on-surface mb-1.5 uppercase tracking-wider">Vehicle Number <span class="text-error">*</span></label>
+                <div class="relative">
+                    <span class="material-symbols-outlined text-outline absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">pin</span>
+                    <input type="text" name="number" required class="w-full bg-surface border border-outline-variant rounded-xl pl-10 pr-4 py-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none uppercase tracking-widest font-bold font-mono" placeholder="MH-12-AB-1234">
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-xs font-semibold text-on-surface mb-1.5 uppercase tracking-wider">Vehicle Type <span class="text-error">*</span></label>
+                <div class="relative">
+                    <span class="material-symbols-outlined text-outline absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">category</span>
+                    <select name="type" id="id_vehicle_type" required class="w-full bg-surface border border-outline-variant rounded-xl pl-10 pr-4 py-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none appearance-none cursor-pointer font-medium">
+                        <option value="" disabled selected>Select type…</option>
+                        <option value="car">Car (Four-wheeler)</option>
+                        <option value="bike">Bike (Two-wheeler)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="parking-slot-row" class="hidden">
+                <label class="block text-xs font-semibold text-on-surface mb-1.5 uppercase tracking-wider">Parking Slot</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined text-outline absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">local_parking</span>
+                    <input type="text" name="parking_slot" class="w-full bg-surface border border-outline-variant rounded-xl pl-10 pr-4 py-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none" placeholder="e.g. A-12">
+                </div>
+                <p class="text-[11px] text-on-surface-variant mt-1.5">Leave blank if a slot hasn't been assigned yet.</p>
+            </div>
+            
+            <div class="flex gap-4 pt-2">
+                <a href="{% url 'resident_dashboard_data' %}" class="flex-1 px-4 py-3 rounded-xl border-2 border-outline-variant/50 text-on-surface-variant font-bold text-center hover:bg-surface-container hover:text-on-surface transition-colors">
+                    Cancel
+                </a>
+                <button type="submit" class="flex-[2] flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg transition-all active:scale-95">
+                    <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                    Register
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Simple script to show/hide parking slot (optional) - assuming it was handled by some JS, but if not we can just show it always or leave hidden if managed externally. I'll make sure it's shown if there is an error, but by default it was hidden in original file (`style="display:none"`). I used `.hidden` Tailwind class. -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.getElementById('id_vehicle_type');
+        const parkingRow = document.getElementById('parking-slot-row');
+        
+        typeSelect.addEventListener('change', function() {
+            if (this.value) {
+                parkingRow.classList.remove('hidden');
+            } else {
+                parkingRow.classList.add('hidden');
+            }
+        });
+        
+        if (typeSelect.value) {
+            parkingRow.classList.remove('hidden');
+        }
+    });
+</script>
+{% endblock %}

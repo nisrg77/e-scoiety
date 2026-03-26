@@ -1,0 +1,16 @@
+## Proposed Changes: Facilities App 
+**Goal:** Enable shared amenity booking and track availability.
+
+### facilities/models.py
+- `Facility`: `name` (Gym, Pool, Hall), `description`, `capacity`, `booking_fee`
+- `FacilityBooking`: `facility` (FK), `resident` (FK to `ResidentProfile`), `date`, `start_time`, `end_time`, `status` (`confirmed`, `cancelled`), `payment_status`
+
+### facilities/services.py
+- `list_facilities()`
+- `check_availability(facility_id, date, start_time, end_time)`
+- `book_facility(resident_id, facility_id, date, start_time, end_time)`
+
+### facilities/views.py & facilities/urls.py
+- `facility_list_view`
+- `book_facility_view`
+- `my_bookings_view`

@@ -1,0 +1,140 @@
+{% extends 'resident_base.html' %}
+
+{% block title %}Resident Directory | eSociety{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-extrabold text-on-surface tracking-tight">Resident Directory</h2>
+            <p class="text-sm text-on-surface-variant font-medium mt-1">Community members</p>
+        </div>
+        <div class="px-3 py-1.5 rounded-xl bg-primary-container/30 text-primary-fixed-dim font-bold text-xs flex items-center gap-1.5 border border-primary/20">
+            <span class="material-symbols-outlined text-sm">people</span>
+            {{ residents|length }}
+        </div>
+    </div>
+
+    <!-- Search/Filter -->
+    <div class="bg-surface-container-lowest p-5 rounded-3xl shadow-sm border border-outline-variant/10 space-y-4">
+        <h4 class="text-sm font-bold text-on-surface tracking-wide flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px] text-primary">search</span>
+            Search Directory
+        </h4>
+        <div class="flex flex-col md:flex-row gap-3">
+            <div class="relative flex-grow">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none">person_search</span>
+                <input type="text" id="residentSearch" class="w-full bg-surface-container-low border-none rounded-xl pl-12 pr-4 py-3 text-sm text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/50 transition-shadow" placeholder="Search by name or email…">
+            </div>
+            <div class="relative md:w-1/3">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none">apartment</span>
+                <input type="text" id="buildingSearch" class="w-full bg-surface-container-low border-none rounded-xl pl-12 pr-4 py-3 text-sm text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/50 transition-shadow" placeholder="e.g. Block A">
+            </div>
+        </div>
+    </div>
+
+    <!-- Directory List -->
+    {% if residents %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="residentList">
+        {% for resident in residents %}
+        <div class="resident-card bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/10 flex items-start gap-4 transition-all">
+            <div class="w-14 h-14 bg-gradient-to-br from-primary/80 to-primary-container text-white rounded-2xl flex items-center justify-center font-extrabold text-xl shadow-md rotate-3 flex-shrink-0">
+                {{ resident.user.email|make_list|first|upper }}
+            </div>
+            <div class="flex-grow min-w-0">
+                <h3 class="font-bold text-on-surface text-base truncate resident-name">{{ resident.user.email }}</h3>
+                <p class="text-xs text-on-surface-variant font-medium mt-0.5 truncate resident-flat">
+                    <span class="material-symbols-outlined text-[12px] align-middle">home</span>
+                    {{ resident.flat.flat_number|default:"Flat details unassigned" }}
+                </p>
+                
+                <div class="flex flex-wrap gap-2 mt-3">
+                    {% if resident.phone %}
+                    <span class="px-2 py-1 bg-surface-container rounded-md text-[10px] font-bold text-on-surface-variant flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[12px]">call</span>
+                        {{ resident.phone }}
+                    </span>
+                    {% endif %}
+                    <span class="px-2 py-1 bg-secondary-container text-on-secondary-container rounded-md text-[10px] font-bold flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[12px]">family_restroom</span>
+                        {{ resident.family_members.count }} 
+                    </span>
+                    <span class="px-2 py-1 bg-tertiary-container text-on-tertiary-container rounded-md text-[10px] font-bold flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[12px]">directions_car</span>
+                        {{ resident.vehicles.count }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- No Results State (Hidden by default) -->
+    <div id="noResultsState" class="hidden bg-surface-container-lowest p-8 rounded-3xl shadow-sm border border-outline-variant/10 flex-col items-center justify-center text-center mt-4">
+        <div class="w-16 h-16 bg-surface-variant text-on-surface-variant rounded-full flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-3xl">search_off</span>
+        </div>
+        <h3 class="text-xl font-bold text-on-surface mb-2">No residents found</h3>
+        <p class="text-sm text-on-surface-variant">Try adjusting your search filters.</p>
+    </div>
+    
+    {% else %}
+    <!-- Empty State -->
+    <div class="bg-surface-container-lowest p-8 rounded-3xl shadow-sm border border-outline-variant/10 flex flex-col items-center justify-center text-center mt-8">
+        <div class="w-16 h-16 bg-surface-variant text-on-surface-variant rounded-full flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-3xl">manage_accounts</span>
+        </div>
+        <h3 class="text-xl font-bold text-on-surface mb-2">Directory Empty</h3>
+        <p class="text-sm text-on-surface-variant mw-xs">No residents have registered yet.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const searchInput = document.getElementById('residentSearch');
+    const buildingInput = document.getElementById('buildingSearch');
+    const residentCards = document.querySelectorAll('.resident-card');
+    const noResultsState = document.getElementById('noResultsState');
+
+    function filterResidents() {
+        if (!searchInput || !buildingInput) return;
+        
+        const nameQ = searchInput.value.toLowerCase();
+        const bldgQ = buildingInput.value.toLowerCase();
+        let visibleCount = 0;
+
+        residentCards.forEach(card => {
+            const name = card.querySelector('.resident-name').textContent.toLowerCase();
+            const flat = card.querySelector('.resident-flat').textContent.toLowerCase();
+            
+            const matchName = name.includes(nameQ);
+            const matchBldg = flat.includes(bldgQ);
+
+            if (matchName && matchBldg) {
+                card.style.display = 'flex';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        if (visibleCount === 0 && residentCards.length > 0) {
+            noResultsState.classList.remove('hidden');
+            noResultsState.classList.add('flex');
+        } else {
+            noResultsState.classList.add('hidden');
+            noResultsState.classList.remove('flex');
+        }
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', filterResidents);
+    }
+    if (buildingInput) {
+        buildingInput.addEventListener('input', filterResidents);
+    }
+</script>
+{% endblock %}

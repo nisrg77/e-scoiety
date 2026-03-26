@@ -1,0 +1,24 @@
+## Proposed Changes: Complaints App
+
+### complaints/models.py
+Define the `Complaint` model to track issues raised by residents:
+- `resident` (ForeignKey to `residents.ResidentProfile`, the reporter)
+- `category` (CharField choices: `plumbing`, `electrical`, `security`, `noise`, `other`)
+- `title` (CharField)
+- `description` (TextField)
+- `status` (CharField choices: `open`, `in_progress`, `resolved`, `closed`)
+- `created_at` (DateTimeField)
+- `updated_at` (DateTimeField)
+- `resolution_remarks` (TextField, blank=True)
+
+### complaints/services.py
+Create business logic functions:
+- `create_complaint(resident_id, data)`
+- `update_complaint_status(complaint_id, status, remarks=None)`
+- `get_resident_complaints(resident_id)`
+- `get_all_complaints(status=None)` (For admin dashboard)
+
+### complaints/views.py & complaints/urls.py
+Implement views that utilize the services:
+- **Resident**: `raise_complaint_view`, `my_complaints_view`
+- **Admin**: `manage_complaints_view` (Update status)
