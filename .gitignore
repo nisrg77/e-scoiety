@@ -134,3 +134,10 @@ test_security_dashboard.py
 db_esoc.backup
 *.backup
 *.dump
+
+# Environments
+.env
+.env.local
+.venv
+env/
+venv/

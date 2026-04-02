@@ -13,9 +13,13 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env file
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -87,14 +91,13 @@ WSGI_APPLICATION = 'esociety.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'esoc_db',
-        'USER': 'postgres',
-        'PASSWORD': 'nisu',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.environ.get('DB_NAME', 'esoc_db'),
+        'USER': os.environ.get('DB_USER', 'postgres'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
-
 # In production, use the DATABASE_URL environment variable to auto-configure Postgres
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
@@ -156,3 +159,20 @@ LOGIN_URL = '/login/'
 # Email Settings for testing
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST_USER = 'noreply@esociety.com'
+
+# --- Production Security Settings ---
+if not DEBUG:
+    # Ensure requests over HTTP are redirected to HTTPS
+    SECURE_SSL_REDIRECT = True
+    
+    # Store cookies securely over HTTPS
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    
+    # Let Django know it's behind a proxy (like Render/Heroku)
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    
+    # Add trusted origins if provided in .env (e.g. https://my-app.onrender.com)
+    csrf_trust = os.environ.get('CSRF_TRUSTED_ORIGINS')
+    if csrf_trust:
+        CSRF_TRUSTED_ORIGINS = csrf_trust.split(',')
