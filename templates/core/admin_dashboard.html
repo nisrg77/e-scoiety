@@ -213,6 +213,42 @@
 </div>
 <!-- Right Column: Pending & Priority -->
 <div class="space-y-8">
+<!-- Pending Facility Bookings (Paid only) -->
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<h3 class="text-xl font-headline font-bold">Facility Approvals</h3>
+{% if pending_bookings %}
+<span class="bg-primary-container text-on-primary-container text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-tighter">{{ pending_bookings.count }} Review</span>
+{% endif %}
+</div>
+<div class="bg-surface-container-low rounded-lg p-2 space-y-2 max-h-80 overflow-y-auto">
+{% for b in pending_bookings %}
+<div class="bg-white p-5 rounded-xl flex flex-col gap-4 border border-outline-variant/10 shadow-sm hover:shadow-md transition-all">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary">event_available</span>
+            </div>
+            <div>
+                <h4 class="text-sm font-bold">{{ b.facility.name }} - {{ b.resident.user.email }}</h4>
+                <p class="text-xs text-on-surface-variant">{{ b.date|date:"F d, Y" }} ({{ b.start_time|time:"H:i" }} - {{ b.end_time|time:"H:i" }})</p>
+                <p class="text-[10px] font-bold text-primary uppercase tracking-wide mt-1">₹{{ b.facility.fee }} Booking Fee</p>
+            </div>
+        </div>
+    </div>
+    <div class="flex gap-2 pt-2 border-t border-outline-variant/5">
+        <a href="{% url 'approve_booking_facility' b.id %}" class="flex-1 py-2 bg-primary text-white text-[10px] font-bold uppercase rounded-lg text-center hover:bg-primary-container hover:text-on-primary-container transition-colors">Confirm</a>
+        <a href="{% url 'reject_booking_facility' b.id %}" class="flex-1 py-2 bg-red-50 text-red-600 text-[10px] font-bold uppercase rounded-lg text-center border border-red-100 hover:bg-red-100 transition-colors">Decline</a>
+    </div>
+</div>
+{% empty %}
+<div class="p-5 text-center text-sm text-on-surface-variant">
+    No facility bookings need approval.
+</div>
+{% endfor %}
+</div>
+</div>
+
 <!-- Pending Payments Approvals -->
 <div class="space-y-6">
 <div class="flex justify-between items-center">

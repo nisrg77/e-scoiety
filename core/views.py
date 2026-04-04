@@ -116,6 +116,9 @@ def admin_dashboard(request):
     
     pending_payments = Invoice.objects.filter(status='pending').order_by('-created_at')
     
+    # Fetch pending facility bookings (only those for paid facilities)
+    pending_bookings = FacilityBooking.objects.filter(status='pending', facility__fee__gt=0).order_by('-date', '-start_time')
+    
     context = {
         'total_residents': total_residents,
         'total_security': total_security,
@@ -125,6 +128,7 @@ def admin_dashboard(request):
         'total_expenses': total_expenses,
         'total_revenue': total_revenue,
         'pending_payments': pending_payments,
+        'pending_bookings': pending_bookings,
     }
     return render(request, "core/admin_dashboard.html", context)
 

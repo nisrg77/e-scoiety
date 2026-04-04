@@ -47,8 +47,36 @@ def book_facility(facility_id, date, start_time, end_time, resident_id=None, boo
         kwargs['resident'] = get_object_or_404(ResidentProfile, id=resident_id)
     if booked_by_user:
         kwargs['booked_by'] = booked_by_user
-    
+        kwargs['status'] = 'confirmed' # Admin bookings are auto-confirmed
+        kwargs['payment_status'] = 'paid'
+    elif facility.fee == 0:
+        kwargs['status'] = 'confirmed' # Free resident bookings auto-confirmed
+    else:
+        kwargs['status'] = 'pending' # Paid resident bookings need approval
+        
     return FacilityBooking.objects.create(**kwargs)
+
+def approve_booking(booking_id):
+    """
+    Admin function to confirm a resident's facility reservation.
+    """
+    booking = get_object_or_404(FacilityBooking, id=booking_id)
+    if booking.status == 'pending':
+        booking.status = 'confirmed'
+        booking.save()
+        return True
+    return False
+
+def reject_booking(booking_id):
+    """
+    Admin function to decline a facility reservation.
+    """
+    booking = get_object_or_404(FacilityBooking, id=booking_id)
+    if booking.status == 'pending':
+        booking.status = 'cancelled'
+        booking.save()
+        return True
+    return False
 
 def cancel_booking(booking_id, user):
     """

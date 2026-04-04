@@ -72,7 +72,7 @@
                                 {% if request.GET.facility == facility.id|stringformat:"s" %}selected
                                 {% elif booking and booking.facility.id == facility.id %}selected
                                 {% endif %}>
-                                {{ facility.name }} {% if facility.booking_fee > 0 %}(₹{{ facility.booking_fee }}){% else %}(Free){% endif %}
+                                {{ facility.name }} {% if facility.fee > 0 %}(₹{{ facility.fee }}){% else %}(Free){% endif %}
                             </option>
                             {% endfor %}
                         </select>

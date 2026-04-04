@@ -205,3 +205,36 @@ def cancel_booking_view(request, booking_id):
             pass  # Silently ignore unauthorized attempts
     return redirect('my_bookings')
 
+
+@login_required
+def approve_booking_view(request, booking_id):
+    """
+    Endpoint for admins to confirm a resident's amenity booking.
+    """
+    if request.user.role != 'admin':
+        return redirect('admin_dashboard')
+    
+    from django.contrib import messages
+    if services.approve_booking(booking_id):
+        messages.success(request, f"Booking #{booking_id} has been confirmed.")
+    else:
+        messages.error(request, "Failed to confirm. Booking might not be in pending state.")
+    
+    return redirect('admin_dashboard')
+
+@login_required
+def reject_booking_view(request, booking_id):
+    """
+    Endpoint for admins to decline an amenity booking.
+    """
+    if request.user.role != 'admin':
+        return redirect('admin_dashboard')
+    
+    from django.contrib import messages
+    if services.reject_booking(booking_id):
+        messages.warning(request, f"Booking #{booking_id} has been cancelled.")
+    else:
+        messages.error(request, "Failed to cancel. Booking might not be in pending state.")
+    
+    return redirect('admin_dashboard')
+
