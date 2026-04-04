@@ -36,6 +36,10 @@
     <span class="material-symbols-outlined">group</span>
     <span>Residents</span>
 </a>
+<a href="{% url 'facility_list' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'facility_list' or request.resolver_match.url_name == 'book_facility' or request.resolver_match.url_name == 'my_bookings' %}active{% endif %}">
+    <span class="material-symbols-outlined">domain</span>
+    <span>Facilities</span>
+</a>
 <a href="{% url 'manage_complaints' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'manage_complaints' %}active{% endif %}">
     <span class="material-symbols-outlined">report_problem</span>
     <span>Issues</span>
