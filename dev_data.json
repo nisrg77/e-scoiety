@@ -1,0 +1,400 @@
+[
+{
+    "model": "core.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$0pevpOlIMF5I3GDZruagzi$Vgt+rSqEC8KqisKLU63Zf4sUbPwZGigRyXPlcWFyPE8=",
+        "last_login": "2026-03-26T21:48:53.700Z",
+        "email": "admin@esociety.com",
+        "role": "admin",
+        "is_active": true,
+        "is_staff": true,
+        "is_admin": true,
+        "created_at": "2026-03-11T07:29:24.771Z",
+        "updated_at": "2026-03-18T08:39:36.275Z"
+    }
+},
+{
+    "model": "core.user",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$iYEnSJyMv594qZypo7GLpo$7xiuEPJQ4sOZt1hgyRJ7erE9U5MRxXDN1acNp8KFHow=",
+        "last_login": "2026-04-04T06:40:30.704Z",
+        "email": "resident@test.com",
+        "role": "resident",
+        "is_active": true,
+        "is_staff": false,
+        "is_admin": false,
+        "created_at": "2026-03-18T08:30:12.546Z",
+        "updated_at": "2026-03-26T18:13:31.340Z"
+    }
+},
+{
+    "model": "core.user",
+    "pk": 4,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$Zb3I6xyOwb3e2PmPaqkL7t$dtagC2a4I1qfIHykhi6Wp57IpJuLEnkrtbE9Q5tRhK4=",
+        "last_login": "2026-03-26T21:48:53.741Z",
+        "email": "security@test.com",
+        "role": "security",
+        "is_active": true,
+        "is_staff": false,
+        "is_admin": false,
+        "created_at": "2026-03-18T08:30:12.997Z",
+        "updated_at": "2026-03-18T08:39:38.318Z"
+    }
+},
+{
+    "model": "core.user",
+    "pk": 35,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$FMCXI7FMLxcHJ679cOL6Y9$MdBxa/BwU6quHCWUzC4upYj4XUwScXChGJUeYouBWPE=",
+        "last_login": null,
+        "email": "test_resident_2@example.com",
+        "role": "resident",
+        "is_active": true,
+        "is_staff": false,
+        "is_admin": false,
+        "created_at": "2026-03-23T14:57:23.485Z",
+        "updated_at": "2026-03-23T14:57:23.485Z"
+    }
+},
+{
+    "model": "core.user",
+    "pk": 36,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$GFRIJoXol0F4aIAot7hC8o$tMjbG961MaWC77wSFR+7/yCOmhK7Pr3bk5tmIADkH0Q=",
+        "last_login": "2026-04-04T07:05:00.103Z",
+        "email": "admin@test.com",
+        "role": "admin",
+        "is_active": true,
+        "is_staff": true,
+        "is_admin": true,
+        "created_at": "2026-03-28T12:18:09.351Z",
+        "updated_at": "2026-03-28T12:18:09.351Z"
+    }
+},
+{
+    "model": "residents.society",
+    "pk": 1,
+    "fields": {
+        "name": "eSociety Test Society",
+        "address": "123 Main Street, Test City",
+        "registration_number": "ESOC001",
+        "created_at": "2026-03-23T13:43:23.879Z"
+    }
+},
+{
+    "model": "residents.building",
+    "pk": 1,
+    "fields": {
+        "society": 1,
+        "name": "A Wing",
+        "floors": 5
+    }
+},
+{
+    "model": "residents.flat",
+    "pk": 1,
+    "fields": {
+        "building": 1,
+        "number": "101",
+        "owner_name": "Test Resident"
+    }
+},
+{
+    "model": "residents.residentprofile",
+    "pk": 1,
+    "fields": {
+        "user": 3,
+        "flat": 1,
+        "move_in_date": null
+    }
+},
+{
+    "model": "residents.familymember",
+    "pk": 1,
+    "fields": {
+        "resident": 1,
+        "name": "Sarah Doe",
+        "relation": "Spouse",
+        "phone": "9876500000"
+    }
+},
+{
+    "model": "residents.vehicle",
+    "pk": 1,
+    "fields": {
+        "resident": 1,
+        "number": "dadawdawd",
+        "type": "car",
+        "parking_slot": "d"
+    }
+},
+{
+    "model": "visitors.visitor",
+    "pk": 1,
+    "fields": {
+        "resident": 1,
+        "name": "Ravi Kumar",
+        "phone": "9123456789",
+        "purpose": "Guest",
+        "vehicle_number": "",
+        "entry_time": "2026-03-23T13:46:11.291Z",
+        "exit_time": null,
+        "status": "pending"
+    }
+},
+{
+    "model": "visitors.visitor",
+    "pk": 2,
+    "fields": {
+        "resident": 1,
+        "name": "Test Delivery Agent",
+        "phone": "9998887776",
+        "purpose": "Delivery Service",
+        "vehicle_number": "MH12",
+        "entry_time": "2026-03-26T21:41:28.898Z",
+        "exit_time": "2026-03-26T21:41:48.734Z",
+        "status": "exited"
+    }
+},
+{
+    "model": "visitors.visitor",
+    "pk": 3,
+    "fields": {
+        "resident": 1,
+        "name": "Test Delivery Agent",
+        "phone": "9998887776",
+        "purpose": "Delivery Service",
+        "vehicle_number": "MH12",
+        "entry_time": "2026-03-26T21:41:48.729Z",
+        "exit_time": null,
+        "status": "entered"
+    }
+},
+{
+    "model": "complaints.complaint",
+    "pk": 1,
+    "fields": {
+        "resident": 1,
+        "category": "Maintenance",
+        "title": "Broken Lift",
+        "description": "Lift on Floor 1 is not working",
+        "status": "resolved",
+        "resolution_remarks": null,
+        "created_at": "2026-03-23T13:46:28.100Z",
+        "updated_at": "2026-03-28T12:32:54.095Z"
+    }
+},
+{
+    "model": "facilities.facility",
+    "pk": 1,
+    "fields": {
+        "name": "Gymnasium",
+        "description": "Main society gym with cardio and weight equipment.",
+        "capacity": 20,
+        "fee": "0.00",
+        "opening_time": null,
+        "closing_time": null
+    }
+},
+{
+    "model": "facilities.facility",
+    "pk": 2,
+    "fields": {
+        "name": "Swimming Pool",
+        "description": "Outdoor temperature controlled pool.",
+        "capacity": 15,
+        "fee": "0.00",
+        "opening_time": null,
+        "closing_time": null
+    }
+},
+{
+    "model": "facilities.facility",
+    "pk": 3,
+    "fields": {
+        "name": "Clubhouse Grand Hall",
+        "description": "Large air-conditioned hall for parties and events.",
+        "capacity": 100,
+        "fee": "1500.00",
+        "opening_time": null,
+        "closing_time": null
+    }
+},
+{
+    "model": "facilities.facility",
+    "pk": 4,
+    "fields": {
+        "name": "Tennis Court",
+        "description": "Outdoor synthetic tennis court.",
+        "capacity": 4,
+        "fee": "200.00",
+        "opening_time": null,
+        "closing_time": null
+    }
+},
+{
+    "model": "facilities.facilitybooking",
+    "pk": 1,
+    "fields": {
+        "facility": 1,
+        "resident": null,
+        "booked_by": null,
+        "date": "2026-03-03",
+        "start_time": "10:00:00",
+        "end_time": "12:00:00",
+        "status": "pending",
+        "payment_status": "paid",
+        "created_at": "2026-03-23T13:18:42.463Z"
+    }
+},
+{
+    "model": "facilities.facilitybooking",
+    "pk": 2,
+    "fields": {
+        "facility": 1,
+        "resident": 1,
+        "booked_by": null,
+        "date": "2026-03-09",
+        "start_time": "22:39:00",
+        "end_time": "23:39:00",
+        "status": "pending",
+        "payment_status": "paid",
+        "created_at": "2026-03-23T15:09:54.220Z"
+    }
+},
+{
+    "model": "facilities.facilitybooking",
+    "pk": 3,
+    "fields": {
+        "facility": 1,
+        "resident": 1,
+        "booked_by": null,
+        "date": "2026-04-03",
+        "start_time": "09:02:00",
+        "end_time": "09:30:00",
+        "status": "cancelled",
+        "payment_status": "paid",
+        "created_at": "2026-04-04T06:57:21.946Z"
+    }
+},
+{
+    "model": "facilities.facilitybooking",
+    "pk": 4,
+    "fields": {
+        "facility": 4,
+        "resident": 1,
+        "booked_by": null,
+        "date": "2026-03-09",
+        "start_time": "09:00:00",
+        "end_time": "10:00:00",
+        "status": "cancelled",
+        "payment_status": "paid",
+        "created_at": "2026-04-04T07:00:55.943Z"
+    }
+},
+{
+    "model": "finance.invoice",
+    "pk": 1,
+    "fields": {
+        "resident": 1,
+        "month": 3,
+        "year": 2026,
+        "amount": "223.00",
+        "description": "Monthly Maintenadnce",
+        "status": "paid",
+        "due_date": "2026-04-12",
+        "created_at": "2026-03-28T12:42:28.577Z"
+    }
+},
+{
+    "model": "finance.invoice",
+    "pk": 2,
+    "fields": {
+        "resident": 1,
+        "month": 3,
+        "year": 2026,
+        "amount": "223.00",
+        "description": "Monthly Maintenadnce",
+        "status": "unpaid",
+        "due_date": "2026-04-12",
+        "created_at": "2026-03-28T12:42:28.909Z"
+    }
+},
+{
+    "model": "finance.payment",
+    "pk": 1,
+    "fields": {
+        "invoice": 1,
+        "amount_paid": "233.00",
+        "payment_date": "2026-04-04T07:04:03.401Z",
+        "transaction_id": "3333wq"
+    }
+},
+{
+    "model": "finance.payment",
+    "pk": 2,
+    "fields": {
+        "invoice": 1,
+        "amount_paid": "22.00",
+        "payment_date": "2026-04-04T07:04:09.989Z",
+        "transaction_id": "222"
+    }
+},
+{
+    "model": "finance.societyexpense",
+    "pk": 1,
+    "fields": {
+        "title": "Lift Maintenance",
+        "amount": "3500.00",
+        "date": "2026-03-23",
+        "category": "Maintenance"
+    }
+},
+{
+    "model": "notifications.notice",
+    "pk": 6,
+    "fields": {
+        "title": "sfsf",
+        "content": "ssfff",
+        "created_by": 36,
+        "created_at": "2026-03-28T12:52:03.881Z",
+        "is_pinned": false
+    }
+},
+{
+    "model": "security.emergencyalert",
+    "pk": 1,
+    "fields": {
+        "resident": 1,
+        "alert_type": "medical",
+        "description": "",
+        "timestamp": "2026-03-26T21:41:02.500Z",
+        "status": "active"
+    }
+},
+{
+    "model": "security.emergencyalert",
+    "pk": 2,
+    "fields": {
+        "resident": 1,
+        "alert_type": "medical",
+        "description": "",
+        "timestamp": "2026-03-26T21:41:28.830Z",
+        "status": "active"
+    }
+},
+{
+    "model": "security.emergencyalert",
+    "pk": 3,
+    "fields": {
+        "resident": 1,
+        "alert_type": "medical",
+        "description": "",
+        "timestamp": "2026-03-26T21:41:48.660Z",
+        "status": "resolved"
+    }
+}
+]
