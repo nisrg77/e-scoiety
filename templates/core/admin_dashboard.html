@@ -223,7 +223,7 @@
 </div>
 <div class="bg-surface-container-low rounded-lg p-2 space-y-2 max-h-80 overflow-y-auto">
 {% for pending in pending_residents %}
-<div class="bg-white p-5 rounded-xl flex items-center justify-between group cursor-pointer hover:shadow-md transition-all" onclick="window.location.href='{% url 'onboard_resident' pending.id %}'">
+<div class="bg-white p-5 rounded-xl flex items-center justify-between group cursor-pointer hover:shadow-md transition-all" onclick="window.location.href='{% url 'onboard_resident' pending.id %}';">
 <div class="flex items-center gap-4">
 <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
 <span class="material-symbols-outlined text-primary" data-icon="person_add">person_add</span>
