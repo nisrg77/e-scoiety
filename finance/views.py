@@ -111,3 +111,37 @@ def create_invoice_view(request):
         return redirect('expense_report') # Redirecting to finance hub
         
     return render(request, 'finance/create_invoice.html', {'residents': residents})
+
+@login_required
+def approve_payment_view(request, invoice_id):
+    """
+    Endpoint for admins to confirm a resident's payment.
+    """
+    if request.user.role != 'admin':
+        return redirect('admin_dashboard')
+    
+    from . import services
+    from django.contrib import messages
+    if services.approve_invoice(invoice_id):
+        messages.success(request, f"Invoice #{invoice_id} has been approved and marked as Paid.")
+    else:
+        messages.error(request, "Failed to approve. Invoice might not be in pending state.")
+    
+    return redirect('admin_dashboard')
+
+@login_required
+def reject_payment_view(request, invoice_id):
+    """
+    Endpoint for admins to decline a suspicious or incorrect payment.
+    """
+    if request.user.role != 'admin':
+        return redirect('admin_dashboard')
+    
+    from . import services
+    from django.contrib import messages
+    if services.reject_invoice(invoice_id):
+        messages.warning(request, f"Payment for Invoice #{invoice_id} has been rejected.")
+    else:
+        messages.error(request, "Failed to reject. Invoice might not be in pending state.")
+    
+    return redirect('admin_dashboard')

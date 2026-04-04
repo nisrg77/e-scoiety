@@ -54,10 +54,32 @@ def record_payment(invoice_id, amount, transaction_id=None):
     total_paid = invoice.payments.aggregate(total=Sum('amount_paid'))['total'] or 0
     
     if total_paid >= invoice.amount:
-        invoice.status = 'paid'
+        invoice.status = 'pending' # Set to pending for admin approval
         invoice.save()
         
     return payment
+
+def approve_invoice(invoice_id):
+    """
+    Admin function to manually confirm a payment and mark an invoice as fully 'paid'.
+    """
+    invoice = get_object_or_404(Invoice, id=invoice_id)
+    if invoice.status == 'pending':
+        invoice.status = 'paid'
+        invoice.save()
+        return True
+    return False
+
+def reject_invoice(invoice_id):
+    """
+    Admin function to reject a payment if the details are incorrect.
+    """
+    invoice = get_object_or_404(Invoice, id=invoice_id)
+    if invoice.status == 'pending':
+        invoice.status = 'unpaid'
+        invoice.save()
+        return True
+    return False
 
 def get_expense_report(start_date=None, end_date=None):
     """

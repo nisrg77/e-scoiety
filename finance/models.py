@@ -7,6 +7,7 @@ class Invoice(models.Model):
     """
     STATUS_CHOICES = (
         ('unpaid', 'Unpaid'),
+        ('pending', 'Pending Verification'),
         ('paid', 'Paid'),
     )
     resident = models.ForeignKey(ResidentProfile, on_delete=models.CASCADE, related_name='invoices')

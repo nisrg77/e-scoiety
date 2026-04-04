@@ -114,6 +114,8 @@ def admin_dashboard(request):
     total_expenses = SocietyExpense.objects.aggregate(Sum('amount'))['amount__sum'] or 0
     total_revenue = Invoice.objects.filter(status='paid').aggregate(Sum('amount'))['amount__sum'] or 0
     
+    pending_payments = Invoice.objects.filter(status='pending').order_by('-created_at')
+    
     context = {
         'total_residents': total_residents,
         'total_security': total_security,
@@ -122,6 +124,7 @@ def admin_dashboard(request):
         'active_bookings': active_bookings,
         'total_expenses': total_expenses,
         'total_revenue': total_revenue,
+        'pending_payments': pending_payments,
     }
     return render(request, "core/admin_dashboard.html", context)
 
