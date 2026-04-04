@@ -21,6 +21,10 @@
     <span class="material-symbols-outlined">payments</span>
     Accounting
 </a>
+<a href="{% url 'create_invoice' %}" class="nav-item {% if request.resolver_match.url_name == 'create_invoice' %}active{% endif %}">
+    <span class="material-symbols-outlined">receipt_long</span>
+    Dues & Billing
+</a>
 <a href="{% url 'notice_board' %}" class="nav-item {% if request.resolver_match.url_name == 'notice_board' %}active{% endif %}">
     <span class="material-symbols-outlined">campaign</span>
     Notices
@@ -43,6 +47,10 @@
 <a href="{% url 'manage_complaints' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'manage_complaints' %}active{% endif %}">
     <span class="material-symbols-outlined">report_problem</span>
     <span>Issues</span>
+</a>
+<a href="{% url 'create_invoice' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'create_invoice' %}active{% endif %}">
+    <span class="material-symbols-outlined">receipt_long</span>
+    <span>Billing</span>
 </a>
 <a href="{% url 'expense_report' %}" class="bottom-nav-item {% if request.resolver_match.url_name == 'expense_report' %}active{% endif %}">
     <span class="material-symbols-outlined">payments</span>

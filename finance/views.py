@@ -61,3 +61,53 @@ def expense_report_view(request):
         
     expenses = services.get_expense_report()
     return render(request, 'finance/expense_report.html', {'expenses': expenses})
+
+@login_required
+def create_invoice_view(request):
+    """
+    Admin dashboard tool to generate maintenance dues for residents.
+    """
+    if request.user.role != 'admin':
+        return redirect('resident_dashboard')
+        
+    residents = ResidentProfile.objects.all()
+    
+    if request.method == 'POST':
+        from .models import Invoice
+        from datetime import date
+        
+        resident_id = request.POST.get('resident_id')
+        amount = request.POST.get('amount')
+        description = request.POST.get('description', 'Monthly Maintenance')
+        due_date = request.POST.get('due_date')
+        
+        # Determine month/year from due_date or today
+        target_date = date.fromisoformat(due_date) if due_date else date.today()
+        
+        if resident_id == 'all':
+            # Create for all assigned residents
+            for res in residents:
+                if res.flat: # Only for residents assigned to a flat
+                    Invoice.objects.create(
+                        resident=res,
+                        amount=amount,
+                        description=description,
+                        month=target_date.month,
+                        year=target_date.year,
+                        due_date=target_date
+                    )
+        else:
+            # Create for specific resident
+            res = ResidentProfile.objects.get(id=resident_id)
+            Invoice.objects.create(
+                resident=res,
+                amount=amount,
+                description=description,
+                month=target_date.month,
+                year=target_date.year,
+                due_date=target_date
+            )
+            
+        return redirect('expense_report') # Redirecting to finance hub
+        
+    return render(request, 'finance/create_invoice.html', {'residents': residents})

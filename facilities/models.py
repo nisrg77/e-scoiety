@@ -13,6 +13,9 @@ class Facility(models.Model):
     opening_time = models.TimeField(null=True, blank=True)
     closing_time = models.TimeField(null=True, blank=True)
 
+    class Meta:
+        verbose_name_plural = "Facilities"
+
     def __str__(self):
         return self.name
 

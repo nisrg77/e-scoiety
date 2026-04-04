@@ -1,0 +1,186 @@
+[
+{
+    "model": "core.user",
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$0pevpOlIMF5I3GDZruagzi$Vgt+rSqEC8KqisKLU63Zf4sUbPwZGigRyXPlcWFyPE8=",
+        "last_login": "2026-03-26T21:48:53.700Z",
+        "email": "admin@esociety.com",
+        "role": "admin",
+        "is_active": true,
+        "is_staff": true,
+        "is_admin": true,
+        "created_at": "2026-03-11T07:29:24.771Z",
+        "updated_at": "2026-03-18T08:39:36.275Z"
+    }
+},
+{
+    "model": "core.user",
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$iYEnSJyMv594qZypo7GLpo$7xiuEPJQ4sOZt1hgyRJ7erE9U5MRxXDN1acNp8KFHow=",
+        "last_login": "2026-04-04T06:40:30.704Z",
+        "email": "resident@test.com",
+        "role": "resident",
+        "is_active": true,
+        "is_staff": false,
+        "is_admin": false,
+        "created_at": "2026-03-18T08:30:12.546Z",
+        "updated_at": "2026-03-26T18:13:31.340Z"
+    }
+},
+{
+    "model": "core.user",
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$Zb3I6xyOwb3e2PmPaqkL7t$dtagC2a4I1qfIHykhi6Wp57IpJuLEnkrtbE9Q5tRhK4=",
+        "last_login": "2026-03-26T21:48:53.741Z",
+        "email": "security@test.com",
+        "role": "security",
+        "is_active": true,
+        "is_staff": false,
+        "is_admin": false,
+        "created_at": "2026-03-18T08:30:12.997Z",
+        "updated_at": "2026-03-18T08:39:38.318Z"
+    }
+},
+{
+    "model": "core.user",
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$FMCXI7FMLxcHJ679cOL6Y9$MdBxa/BwU6quHCWUzC4upYj4XUwScXChGJUeYouBWPE=",
+        "last_login": null,
+        "email": "test_resident_2@example.com",
+        "role": "resident",
+        "is_active": true,
+        "is_staff": false,
+        "is_admin": false,
+        "created_at": "2026-03-23T14:57:23.485Z",
+        "updated_at": "2026-03-23T14:57:23.485Z"
+    }
+},
+{
+    "model": "core.user",
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$GFRIJoXol0F4aIAot7hC8o$tMjbG961MaWC77wSFR+7/yCOmhK7Pr3bk5tmIADkH0Q=",
+        "last_login": "2026-04-04T07:05:00.103Z",
+        "email": "admin@test.com",
+        "role": "admin",
+        "is_active": true,
+        "is_staff": true,
+        "is_admin": true,
+        "created_at": "2026-03-28T12:18:09.351Z",
+        "updated_at": "2026-03-28T12:18:09.351Z"
+    }
+},
+{
+    "model": "residents.society",
+    "pk": 1,
+    "fields": {
+        "name": "eSociety Test Society",
+        "address": "123 Main Street, Test City",
+        "registration_number": "ESOC001",
+        "created_at": "2026-03-23T13:43:23.879Z"
+    }
+},
+{
+    "model": "residents.building",
+    "pk": 1,
+    "fields": {
+        "society": 1,
+        "name": "A Wing",
+        "floors": 5
+    }
+},
+{
+    "model": "residents.flat",
+    "pk": 1,
+    "fields": {
+        "building": 1,
+        "number": "101",
+        "owner_name": "Test Resident"
+    }
+},
+{
+    "model": "residents.residentprofile",
+    "pk": 1,
+    "fields": {
+        "user": [
+            "resident@test.com"
+        ],
+        "flat": 1,
+        "move_in_date": null
+    }
+},
+{
+    "model": "residents.familymember",
+    "pk": 1,
+    "fields": {
+        "resident": 1,
+        "name": "Sarah Doe",
+        "relation": "Spouse",
+        "phone": "9876500000"
+    }
+},
+{
+    "model": "residents.vehicle",
+    "pk": 1,
+    "fields": {
+        "resident": 1,
+        "number": "dadawdawd",
+        "type": "car",
+        "parking_slot": "d"
+    }
+},
+{
+    "model": "visitors.visitor",
+    "pk": 1,
+    "fields": {
+        "resident": 1,
+        "name": "Ravi Kumar",
+        "phone": "9123456789",
+        "purpose": "Guest",
+        "vehicle_number": "",
+        "entry_time": "2026-03-23T13:46:11.291Z",
+        "exit_time": null,
+        "status": "pending"
+    }
+},
+{
+    "model": "visitors.visitor",
+    "pk": 2,
+    "fields": {
+        "resident": 1,
+        "name": "Test Delivery Agent",
+        "phone": "9998887776",
+        "purpose": "Delivery Service",
+        "vehicle_number": "MH12",
+        "entry_time": "2026-03-26T21:41:28.898Z",
+        "exit_time": "2026-03-26T21:41:48.734Z",
+        "status": "exited"
+    }
+},
+{
+    "model": "visitors.visitor",
+    "pk": 3,
+    "fields": {
+        "resident": 1,
+        "name": "Test Delivery Agent",
+        "phone": "9998887776",
+        "purpose": "Delivery Service",
+        "vehicle_number": "MH12",
+        "entry_time": "2026-03-26T21:41:48.729Z",
+        "exit_time": null,
+        "status": "entered"
+    }
+},
+{
+    "model": "complaints.complaint",
+    "pk": 1,
+    "fields": {
+        "resident": 1,
+        "category": "Maintenance",
+        "title": "Broken Lift",
+        "description": "Lift on Floor 1 is not working",
+        "status": "resolved",
+        "resolution_remarks": null,
+        "created_at": "2026-03-23T13:46:28.100Z",
+        "updated_at": "2026-03-28T12:32:54.095Z"
+    }
+}

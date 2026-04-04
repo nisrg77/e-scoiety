@@ -1,0 +1,78 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Issue Dues | eSociety Admin{% endblock %}
+
+{% block content %}
+<div class="mt-20 px-6 pt-8 max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-10 text-center">
+        <h2 class="text-[2.5rem] font-bold tracking-tight text-on-surface">Generate Maintenance Dues</h2>
+        <p class="text-on-surface-variant text-lg">Assign monthly bills or special maintenance charges to residents.</p>
+    </div>
+
+    <!-- Form Section -->
+    <div class="bg-surface-container-lowest/60 backdrop-blur-xl border border-white/20 p-10 rounded-[2rem] shadow-2xl">
+        <form method="POST" class="space-y-8">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-on-surface">
+                <!-- Resident Selector -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-bold uppercase tracking-wider text-on-surface-variant ml-1">Selection</label>
+                    <select name="resident_id" class="w-full bg-white/5 border border-outline-variant/30 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-primary outline-none transition-all appearance-none cursor-pointer" required>
+                        <option value="all" class="text-on-surface">All Residents (with assigned flats)</option>
+                        {% for resident in residents %}
+                        <option value="{{ resident.id }}" class="text-on-surface">
+                            {{ resident.user.email }} (Flat {{ resident.flat.number|default:'-' }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Amount -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-bold uppercase tracking-wider text-on-surface-variant ml-1">Bill Amount (₹)</label>
+                    <input type="number" step="0.01" name="amount" placeholder="e.g. 2500" required
+                        class="w-full bg-white/5 border border-outline-variant/30 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-primary outline-none transition-all">
+                </div>
+
+                <!-- Description -->
+                <div class="md:col-span-2 space-y-2">
+                    <label class="block text-sm font-bold uppercase tracking-wider text-on-surface-variant ml-1">Reason / Description</label>
+                    <input type="text" name="description" placeholder="e.g. June 2026 Maintenance" value="Monthly Maintenance" required
+                        class="w-full bg-white/5 border border-outline-variant/30 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-primary outline-none transition-all">
+                </div>
+
+                <!-- Due Date -->
+                <div class="md:col-span-2 space-y-2">
+                    <label class="block text-sm font-bold uppercase tracking-wider text-on-surface-variant ml-1">Due Date</label>
+                    <input type="date" name="due_date" required
+                        class="w-full bg-white/5 border border-outline-variant/30 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-primary outline-none transition-all">
+                </div>
+            </div>
+
+            <!-- Warning Note -->
+            <div class="p-5 bg-amber-50 rounded-2xl flex gap-4 items-start border border-amber-100">
+                <span class="material-symbols-outlined text-amber-600">info</span>
+                <p class="text-xs text-amber-900 leading-relaxed font-medium">
+                    Choosing <strong>'All Residents'</strong> will generate unique invoices for every registered resident currently assigned to a flat. This action cannot be easily undone in bulk.
+                </p>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-4">
+                <button type="submit" class="w-full bg-gradient-to-r from-primary to-primary-container text-white py-5 rounded-2xl font-bold text-lg shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                    <span class="material-symbols-outlined">send</span>
+                    Publish & Send Invoices
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    body {
+        background: radial-gradient(circle at 10% 20%, rgba(216, 241, 230, 0.46) 0.1%, rgba(233, 226, 226, 0.28) 90.1%);
+    }
+</style>
+{% endblock %}

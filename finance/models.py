@@ -20,6 +20,9 @@ class Invoice(models.Model):
     due_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name_plural = "Invoices"
+
     def __str__(self):
         return f"Invoice #{self.id} for {self.resident.user.email} - {self.get_status_display()}"
 
@@ -33,6 +36,9 @@ class Payment(models.Model):
     payment_date = models.DateTimeField(auto_now_add=True)
     transaction_id = models.CharField(max_length=100, unique=True, blank=True, null=True)
 
+    class Meta:
+        verbose_name_plural = "Payments"
+
     def __str__(self):
         return f"Payment of {self.amount_paid} for Invoice #{self.invoice.id}"
 
@@ -45,6 +51,9 @@ class SocietyExpense(models.Model):
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     date = models.DateField()
     category = models.CharField(max_length=100) # Maintenance, Salary, Utilities, etc.
+
+    class Meta:
+        verbose_name_plural = "Society Expenses"
 
     def __str__(self):
         return f"{self.title} - {self.amount}"
