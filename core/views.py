@@ -125,6 +125,33 @@ def admin_dashboard(request):
     }
     return render(request, "core/admin_dashboard.html", context)
 
+@admin_required
+def sync_database_view(request):
+    """
+    Special admin-only view to trigger data loading from the JSON export.
+    Allows the user to sync local data to live without using the terminal.
+    """
+    from django.core.management import call_command
+    from django.contrib import messages
+    import os
+    
+    try:
+        # Resolve path to the data file
+        file_path = os.path.join(settings.BASE_DIR, 'dev_data.json')
+        
+        if os.path.exists(file_path):
+            # Run the loaddata command programmatically
+            # Note: natural-foreign keys help maintain ID consistency
+            call_command('loaddata', 'dev_data.json')
+            messages.success(request, "Data Sync Successful! Local database contents have been merged into the live server.")
+        else:
+            messages.error(request, f"Sync Failed: 'dev_data.json' not found at {file_path}. Ensure it was pushed to GitHub.")
+            
+    except Exception as e:
+        messages.error(request, f"Data Sync Error: {str(e)}")
+        
+    return redirect('admin_dashboard')
+
 @resident_required
 def resident_dashboard(request):
     """

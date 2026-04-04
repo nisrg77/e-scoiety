@@ -17,6 +17,7 @@ urlpatterns = [
     
     # RBAC specific protected dashboards
     path('admin_dashboard/',views.admin_dashboard,name='admin_dashboard'),
+    path('admin_dashboard/sync/', views.sync_database_view, name='sync_database'),
     path('resident_dashboard/',views.resident_dashboard,name='resident_dashboard'),
     path('security_dashboard/',views.security_dashboard,name='security_dashboard'),
     
