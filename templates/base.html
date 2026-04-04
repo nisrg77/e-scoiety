@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,656 +78,7 @@
         }
     </script>
 
-    <style>
-        :root {
-            --primary: #5a5ae6;
-            --primary-dark: #403ecc;
-            --surface: #f8f9fd;
-            --sidebar-width: 260px;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f8f9fd;
-            color: #191c1f;
-            min-height: 100vh;
-        }
-
-        h1, h2, h3, h4, h5, .font-jakarta {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        /* ===========================
-           SIDEBAR — Glassmorphism
-        =========================== */
-        .sidebar {
-            position: fixed;
-            left: 0; top: 0;
-            width: var(--sidebar-width);
-            height: 100vh;
-            background: rgba(255,255,255,0.82);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            display: flex;
-            flex-direction: column;
-            padding: 0;
-            z-index: 50;
-            overflow: hidden;
-            border-right: 1px solid rgba(199,196,215,0.25);
-        }
-
-        .sidebar-brand {
-            padding: 24px 20px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid rgba(199,196,215,0.2);
-        }
-
-        .sidebar-brand-icon {
-            width: 40px; height: 40px;
-            background: linear-gradient(135deg, #5a5ae6, #403ecc);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 16px rgba(90,90,230,0.30);
-        }
-
-        .sidebar-brand-icon .material-symbols-outlined {
-            color: white;
-            font-size: 22px;
-        }
-
-        .sidebar-brand h1 {
-            font-size: 16px;
-            font-weight: 800;
-            color: #191c1f;
-            line-height: 1.1;
-            margin: 0;
-        }
-
-        .sidebar-brand p {
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: #464554;
-            margin: 0;
-        }
-
-        .sidebar-nav {
-            flex: 1;
-            padding: 16px 12px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .sidebar-nav::-webkit-scrollbar { width: 0; }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 11px 14px;
-            border-radius: 12px;
-            font-size: 13.5px;
-            font-weight: 600;
-            color: #464554;
-            text-decoration: none;
-            transition: all 0.18s ease;
-            position: relative;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .nav-item:hover {
-            background: rgba(90,90,230,0.07);
-            color: #403ecc;
-        }
-
-        .nav-item.active {
-            background: linear-gradient(135deg, rgba(90,90,230,0.13), rgba(64,62,204,0.08));
-            color: #403ecc;
-        }
-
-        .nav-item.active .material-symbols-outlined {
-            font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
-        }
-
-        .nav-item .material-symbols-outlined {
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        .sidebar-footer {
-            padding: 12px;
-            border-top: 1px solid rgba(199,196,215,0.2);
-        }
-
-        .nav-item.logout-btn {
-            color: #ba1a1a;
-        }
-        .nav-item.logout-btn:hover {
-            background: rgba(186,26,26,0.08);
-            color: #ba1a1a;
-        }
-
-        /* ===========================
-           TOP HEADER
-        =========================== */
-        .top-header {
-            position: fixed;
-            top: 0;
-            right: 0;
-            left: var(--sidebar-width);
-            height: 68px;
-            z-index: 40;
-            background: rgba(248,249,253,0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(199,196,215,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 28px;
-        }
-
-        .page-title-text {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: #191c1f;
-            letter-spacing: -0.02em;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .notif-btn {
-            width: 38px; height: 38px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            color: #464554;
-            position: relative;
-            transition: background 0.2s;
-        }
-        .notif-btn:hover { background: #edeef2; }
-
-        .notif-dot {
-            position: absolute;
-            top: 8px; right: 8px;
-            width: 7px; height: 7px;
-            background: #ba1a1a;
-            border-radius: 50%;
-            border: 1.5px solid #f8f9fd;
-        }
-
-        .user-chip {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: white;
-            border-radius: 999px;
-            padding: 5px 14px 5px 4px;
-            box-shadow: 0 2px 12px rgba(25,28,31,0.07);
-            cursor: pointer;
-            transition: box-shadow 0.2s;
-        }
-        .user-chip:hover { box-shadow: 0 4px 20px rgba(25,28,31,0.12); }
-
-        .user-avatar {
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-        .user-name {
-            font-size: 13px;
-            font-weight: 700;
-            color: #191c1f;
-            line-height: 1.1;
-        }
-        .user-role {
-            font-size: 10px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: #464554;
-        }
-
-        /* ===========================
-           MAIN CONTENT
-        =========================== */
-        .main-content {
-            margin-left: var(--sidebar-width);
-            padding-top: 68px;
-            min-height: 100vh;
-        }
-
-        .content-body {
-            padding: 32px 32px 48px;
-            max-width: 1280px;
-        }
-
-        /* ===========================
-           FLASH MESSAGES
-        =========================== */
-        .flash-message {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 18px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
-        .flash-success { background: rgba(16,185,129,0.08); color: #065f46; }
-        .flash-error   { background: rgba(186,26,26,0.08);  color: #93000a; }
-        .flash-info    { background: rgba(90,90,230,0.08);  color: #403ecc; }
-
-        /* ===========================
-           CARD STYLES (Luminous Ledger)
-        =========================== */
-        .ll-card {
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 4px 24px rgba(25,28,31,0.055);
-            transition: box-shadow 0.2s;
-        }
-        .ll-card:hover { box-shadow: 0 8px 32px rgba(25,28,31,0.09); }
-
-        .ll-card-flat {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-        }
-
-        /* ===========================
-           KPI / STAT CARD
-        =========================== */
-        .kpi-card {
-            background: white;
-            border-radius: 20px;
-            padding: 22px 24px;
-            box-shadow: 0 4px 24px rgba(25,28,31,0.055);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            transition: all 0.2s;
-        }
-        .kpi-card:hover { box-shadow: 0 8px 32px rgba(25,28,31,0.10); transform: translateY(-2px); }
-
-        .kpi-icon {
-            width: 48px; height: 48px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .kpi-num {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 26px;
-            font-weight: 800;
-            color: #191c1f;
-            line-height: 1;
-        }
-        .kpi-label {
-            font-size: 12px;
-            font-weight: 500;
-            color: #464554;
-            margin-top: 2px;
-        }
-
-        /* ===========================
-           PRIMARY GRADIENT BUTTON
-        =========================== */
-        .btn-primary-ll {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 11px 22px;
-            background: linear-gradient(135deg, #5a5ae6, #403ecc);
-            color: white;
-            font-size: 14px;
-            font-weight: 700;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            text-decoration: none;
-            box-shadow: 0 4px 16px rgba(90,90,230,0.30);
-            transition: all 0.2s;
-        }
-        .btn-primary-ll:hover {
-            box-shadow: 0 8px 24px rgba(90,90,230,0.42);
-            transform: translateY(-1px);
-            color: white;
-        }
-        .btn-primary-ll:active { transform: scale(0.97); }
-
-        .btn-secondary-ll {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 11px 22px;
-            background: #edeef2;
-            color: #191c1f;
-            font-size: 14px;
-            font-weight: 600;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .btn-secondary-ll:hover { background: #e1e2e6; color: #191c1f; }
-
-        /* ===========================
-           STATUS BADGES
-        =========================== */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 12px;
-            border-radius: 999px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-        }
-        .badge-pending    { background: rgba(245,158,11,0.12); color: #92400e; }
-        .badge-confirmed  { background: rgba(16,185,129,0.12); color: #065f46; }
-        .badge-cancelled  { background: rgba(186,26,26,0.12);  color: #93000a; }
-        .badge-open       { background: rgba(58,92,166,0.12);  color: #194089; }
-        .badge-resolved   { background: rgba(16,185,129,0.12); color: #065f46; }
-        .badge-in-progress{ background: rgba(90,90,230,0.12);  color: #403ecc; }
-        .badge-closed     { background: rgba(70,69,84,0.12);   color: #464554; }
-        .badge-paid       { background: rgba(16,185,129,0.12); color: #065f46; }
-        .badge-unpaid     { background: rgba(186,26,26,0.12);  color: #93000a; }
-        .badge-expected   { background: rgba(245,158,11,0.12); color: #92400e; }
-        .badge-entered    { background: rgba(16,185,129,0.12); color: #065f46; }
-        .badge-exited     { background: rgba(70,69,84,0.12);   color: #464554; }
-
-        /* ===========================
-           FORM ELEMENTS (Luminous Ledger)
-        =========================== */
-        .ll-input, .ll-select, .ll-textarea {
-            width: 100%;
-            background: #edeef2;
-            border: none;
-            border-radius: 10px;
-            padding: 12px 16px;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            color: #191c1f;
-            transition: all 0.2s;
-            outline: none;
-        }
-        .ll-input:focus, .ll-select:focus, .ll-textarea:focus {
-            background: white;
-            box-shadow: 0 0 0 2px rgba(90,90,230,0.35);
-        }
-        .ll-label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: #464554;
-            margin-bottom: 7px;
-        }
-
-        /* ===========================
-           BOTTOM NAV (mobile)
-        =========================== */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0; left: 0;
-            width: 100%;
-            background: rgba(255,255,255,0.90);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(199,196,215,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding: 10px 8px 20px;
-            z-index: 50;
-        }
-
-        .bottom-nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-            padding: 6px 14px;
-            border-radius: 14px;
-            text-decoration: none;
-            color: #777586;
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            transition: all 0.2s;
-            flex: 1;
-        }
-        .bottom-nav-item:hover { color: #403ecc; }
-        .bottom-nav-item.active {
-            background: rgba(90,90,230,0.1);
-            color: #403ecc;
-        }
-        .bottom-nav-item .material-symbols-outlined { font-size: 22px; }
-        .bottom-nav-item.active .material-symbols-outlined {
-            font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
-        }
-
-        /* ===========================
-           MISC / UTILS
-        =========================== */
-        .section-title {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 15px;
-            font-weight: 800;
-            color: #191c1f;
-            letter-spacing: -0.01em;
-        }
-
-        .text-muted-ll { color: #464554; font-size: 13px; }
-
-        .divider-ll {
-            height: 1px;
-            background: rgba(199,196,215,0.25);
-            margin: 0;
-        }
-
-        .glass-card {
-            background: rgba(255,255,255,0.80);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 4px 24px rgba(25,28,31,0.055);
-        }
-
-        /* Legacy stat-card compat */
-        .stat-card {
-            background: white;
-            border-radius: 18px;
-            padding: 22px 24px;
-            box-shadow: 0 4px 16px rgba(25,28,31,0.05);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            transition: all 0.2s;
-            text-decoration: none;
-            color: inherit;
-        }
-        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(25,28,31,0.09); color: inherit; }
-        .stat-number { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 26px; font-weight: 800; color: #191c1f; line-height: 1; }
-        .stat-label  { font-size: 12px; color: #464554; margin-top: 2px; }
-        .stat-icon   { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .stat-icon-primary { background: rgba(90,90,230,0.12); color: #403ecc; }
-        .stat-icon-success { background: rgba(16,185,129,0.12); color: #047857; }
-        .stat-icon-warning { background: rgba(245,158,11,0.12); color: #92400e; }
-        .stat-icon-danger  { background: rgba(186,26,26,0.12);  color: #93000a; }
-        .stat-icon-purple  { background: rgba(118,76,0,0.12);   color: #764c00; }
-
-        /* Form compat */
-        .form-control, .form-select {
-            width: 100%;
-            background: #edeef2;
-            border: none;
-            border-radius: 10px;
-            padding: 12px 16px;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            color: #191c1f;
-            transition: all 0.2s;
-            outline: none;
-        }
-        .form-control:focus, .form-select:focus {
-            background: white;
-            box-shadow: 0 0 0 2px rgba(90,90,230,0.35);
-        }
-        .form-label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: #464554;
-            margin-bottom: 7px;
-        }
-
-        /* Gradient heading helpers */
-        .gradient-text {
-            background: linear-gradient(135deg, #5a5ae6, #3a5ca6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* SOS Pulse */
-        @keyframes sosPulseBig {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(186,26,26,0.6); }
-            50%       { box-shadow: 0 0 0 20px rgba(186,26,26,0); }
-        }
-        .btn-sos-xl {
-            width: 100%;
-            padding: 32px 24px;
-            font-weight: 800;
-            font-size: 26px;
-            letter-spacing: 1px;
-            border: none;
-            border-radius: 24px;
-            color: #fff;
-            cursor: pointer;
-            background: linear-gradient(135deg, #EF4444, #B91C1C);
-            box-shadow: 0 10px 40px rgba(239,68,68,0.5);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: sosPulseBig 2s ease-in-out infinite;
-        }
-        .btn-sos-xl:hover { transform: scale(1.02) translateY(-4px); box-shadow: 0 15px 50px rgba(239,68,68,0.7); }
-
-        /* Fade-in animation for cards */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(14px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        .ll-card, .kpi-card, .stat-card, .glass-card {
-            animation: fadeUp 0.35s ease both;
-        }
-
-        /* ===========================
-           RESPONSIVE HELPERS
-        =========================== */
-        @media (max-width: 767px) {
-            .sidebar { display: none !important; }
-            .top-header { left: 0; }
-            .main-content { margin-left: 0; padding-bottom: 88px; }
-            .content-body { padding: 20px 16px 40px; }
-        }
-        @media (min-width: 768px) {
-            .bottom-nav { display: none !important; }
-        }
-
-        /* ===========================
-           ALERT / EMERGENCY
-        =========================== */
-        .alert-row-fire      { border-left: 3px solid #EF4444; }
-        .alert-row-medical   { border-left: 3px solid #F59E0B; }
-        .alert-row-intrusion { border-left: 3px solid #8B5CF6; }
-        .alert-row-other     { border-left: 3px solid #6B7280; }
-
-        /* Option tiles (SOS) */
-        .option-tile {
-            border: 2px solid rgba(199,196,215,0.4);
-            border-radius: 14px;
-            padding: 16px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            user-select: none;
-        }
-        .option-tile:hover     { border-color: #5a5ae6; background: rgba(90,90,230,0.04); }
-        .option-tile.selected  { border-color: #5a5ae6; background: rgba(90,90,230,0.09); }
-        .option-tile input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
-
-        /* Table styles */
-        .es-table thead th { padding: 13px 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #464554; }
-        .es-table tbody td { padding: 14px 16px; font-size: 14px; vertical-align: middle; border-top: 1px solid rgba(199,196,215,0.2); }
-        .es-table tbody tr:hover { background: #f2f3f7; }
-
-        /* Facility list */
-        .facility-card { display: flex; flex-direction: column; height: 100%; }
-
-        /* Poll */
-        .poll-option-btn {
-            width: 100%; text-align: left; padding: 13px 16px; border-radius: 11px;
-            border: 1.5px solid rgba(199,196,215,0.4); background: #f2f3f7;
-            font-size: 14px; font-weight: 500; cursor: pointer;
-            display: flex; justify-content: space-between; align-items: center;
-            transition: all 0.2s; color: #191c1f; font-family: 'Inter', sans-serif;
-        }
-        .poll-option-btn:hover { border-color: #5a5ae6; background: rgba(90,90,230,0.05); }
-        .poll-vote-count { background: rgba(90,90,230,0.1); color: #403ecc; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 999px; }
-
-        /* Notice pins */
-        .notice-pinned  { border-left: 3px solid #f59e0b; }
-        .notice-regular { border-left: 3px solid #5a5ae6; }
-
-        /* Page header */
-        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
-        .page-header h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 22px; font-weight: 800; color: #191c1f; margin: 0; }
-        .page-header p  { color: #464554; font-size: 14px; margin: 0; }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -773,10 +125,10 @@
 
     <!-- Right: notif + user chip -->
     <div class="header-actions">
-        <button class="notif-btn">
+        <a href="{% url 'notice_board' %}" class="notif-btn" title="View Notice Board">
             <span class="material-symbols-outlined" style="font-size:20px;">notifications</span>
             <span class="notif-dot"></span>
-        </button>
+        </a>
         <div class="user-chip">
             <div class="user-avatar">
                 {% if request.user.is_authenticated %}
@@ -821,6 +173,55 @@
         <span>Logout</span>
     </a>
 </nav>
+
+<!-- ===================== CHATBOT WIDGET ===================== -->
+<div id="chatbot-widget" class="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
+    <!-- Chat Window -->
+    <div id="chatbot-window" class="hidden w-[320px] sm:w-[360px] h-[450px] bg-white rounded-2xl shadow-2xl border border-gray-100 flex-col overflow-hidden mb-4 transition-all duration-300 origin-bottom-right">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-[#5a5ae6] to-[#403ecc] p-4 flex items-center justify-between text-white">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-2xl">smart_toy</span>
+                <div>
+                    <h3 class="font-jakarta font-bold text-sm">eSociety Assistant</h3>
+                    <p class="text-[10px] text-white/80 uppercase tracking-widest font-semibold">Online</p>
+                </div>
+            </div>
+            <button onclick="toggleChatbot()" class="text-white hover:text-gray-200 transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        
+        <!-- Messages Area -->
+        <div id="chatbot-messages" class="flex-1 p-4 overflow-y-auto bg-[#f8f9fd] flex flex-col gap-3 font-inter text-sm">
+            <!-- Initial Greeting -->
+            <div class="self-start max-w-[85%]">
+                <div class="bg-white border border-gray-100 text-gray-800 p-3 rounded-2xl rounded-tl-sm shadow-sm">
+                    Hello! I'm the eSociety AI Assistant. How can I help you today?
+                </div>
+            </div>
+        </div>
+        
+        <!-- Input Area -->
+        <div class="p-3 bg-white border-t border-gray-100">
+            <form id="chatbot-form" class="flex items-center gap-2" onsubmit="handleChatbotSubmit(event)">
+                <input type="text" id="chatbot-input" placeholder="Type your message..." autocomplete="off" class="flex-1 bg-[#edeef2] border-none rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-[#5a5ae6] focus:bg-white transition-all outline-none" required>
+                <button type="submit" class="w-10 h-10 rounded-xl bg-[#5a5ae6] hover:bg-[#403ecc] text-white flex items-center justify-center transition-colors shadow-md flex-shrink-0">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">send</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toggle Button -->
+    <button onclick="toggleChatbot()" id="chatbot-toggle" class="w-14 h-14 rounded-full bg-gradient-to-r from-[#5a5ae6] to-[#403ecc] text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-center">
+        <span class="material-symbols-outlined text-3xl">chat</span>
+    </button>
+</div>
+
+<!-- Markdown Parser for Chatbot -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="{% static 'js/chatbot.js' %}?v=1.1"></script>
 
 {% block extra_js %}{% endblock %}
 </body>

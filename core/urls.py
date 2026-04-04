@@ -19,4 +19,7 @@ urlpatterns = [
     path('admin_dashboard/',views.admin_dashboard,name='admin_dashboard'),
     path('resident_dashboard/',views.resident_dashboard,name='resident_dashboard'),
     path('security_dashboard/',views.security_dashboard,name='security_dashboard'),
+    
+    # Chatbot API
+    path('api/chatbot/', views.chatbot_api, name='chatbot_api'),
 ]

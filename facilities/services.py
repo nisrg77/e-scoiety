@@ -74,3 +74,28 @@ def get_admin_bookings(user):
     """
     return FacilityBooking.objects.filter(booked_by=user).order_by('-date', '-start_time')
 
+def edit_booking(booking_id, user, facility_id, date, start_time, end_time):
+    """
+    Edits an existing booking if the user has permission to do so.
+    """
+    booking = get_object_or_404(FacilityBooking, id=booking_id)
+    
+    # Permission check: must be admin who booked it, or resident who owns it
+    is_owner = (booking.booked_by == user) or (booking.resident and booking.resident.user == user)
+    is_admin = user.role == 'admin'
+    
+    if not (is_owner or is_admin):
+        raise PermissionError("You do not have permission to edit this booking.")
+        
+    if not check_availability(facility_id, date, start_time, end_time, exclude_booking_id=booking_id):
+        raise ValueError("The facility is already booked for this new time slot.")
+        
+    facility = get_object_or_404(Facility, id=facility_id)
+    
+    booking.facility = facility
+    booking.date = date
+    booking.start_time = start_time
+    booking.end_time = end_time
+    booking.save()
+    return booking
+

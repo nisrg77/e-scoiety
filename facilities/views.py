@@ -74,6 +74,54 @@ def book_facility_view(request):
     })
 
 @login_required
+def edit_booking_view(request, booking_id):
+    """
+    View to edit an existing facility booking timeslot.
+    Reuses the book.html template with pre-filled context.
+    """
+    booking = get_object_or_404(FacilityBooking, id=booking_id)
+    
+    # Simple permission verification
+    is_owner = (booking.booked_by == request.user) or (booking.resident and booking.resident.user == request.user)
+    is_admin = request.user.role == 'admin'
+    if not (is_owner or is_admin):
+        return redirect('my_bookings')
+        
+    facilities = services.list_facilities()
+    
+    if request.method == 'POST':
+        facility_id = request.POST.get('facility_id')
+        date = request.POST.get('date')
+        start_time = request.POST.get('start_time')
+        end_time = request.POST.get('end_time')
+        
+        try:
+            services.edit_booking(
+                booking_id=booking.id,
+                user=request.user,
+                facility_id=facility_id,
+                date=date,
+                start_time=start_time,
+                end_time=end_time
+            )
+            return redirect('my_bookings')
+        except (ValueError, PermissionError) as e:
+            base_template = 'admin_base.html' if request.user.role == 'admin' else 'resident_base.html'
+            return render(request, 'facilities/book.html', {
+                'facilities': facilities, 
+                'base_template': base_template,
+                'booking': booking,
+                'error': str(e)
+            })
+
+    base_template = 'admin_base.html' if request.user.role == 'admin' else 'resident_base.html'
+    return render(request, 'facilities/book.html', {
+        'facilities': facilities,
+        'base_template': base_template,
+        'booking': booking,
+    })
+
+@login_required
 def my_bookings_view(request):
     """
     View listing bookings for the current user (resident or admin).

@@ -63,9 +63,14 @@
                 </div>
             </div>
 
-            <!-- Cancel button — only for active (non-cancelled) bookings -->
+            <!-- Actions (Edit & Cancel) — only for active bookings -->
             {% if booking.status != 'cancelled' %}
-            <div class="pl-3 mt-3 pt-3 border-t border-outline-variant/10">
+            <div class="pl-3 mt-3 pt-3 border-t border-outline-variant/10 flex items-center justify-between">
+                <a href="{% url 'edit_booking' booking.id %}" class="flex items-center gap-1.5 text-primary text-xs font-bold hover:bg-primary/10 px-3 py-1.5 rounded-lg transition-all active:scale-95">
+                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                    Edit Booking
+                </a>
+                
                 <form method="POST" action="{% url 'cancel_booking' booking.id %}" onsubmit="return confirm('Cancel this booking for {{ booking.facility.name }}?');">
                     {% csrf_token %}
                     <button type="submit"
