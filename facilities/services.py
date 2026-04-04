@@ -40,7 +40,7 @@ def book_facility(facility_id, date, start_time, end_time, resident_id=None, boo
         'date': date,
         'start_time': start_time,
         'end_time': end_time,
-        'payment_status': 'paid' if facility.booking_fee == 0 else 'unpaid',
+        'payment_status': 'paid' if facility.fee == 0 else 'unpaid',
     }
     
     if resident_id:

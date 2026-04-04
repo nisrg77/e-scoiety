@@ -100,7 +100,7 @@ def admin_dashboard(request):
     Requires the user to be logged in and have the 'admin' role.
     """
     from residents.models import ResidentProfile
-    from facilities.models import FacilityBooking
+    from facilities.models import FacilityBooking, Facility
     from finance.models import SocietyExpense, Invoice
     from django.db.models import Sum
     from core.models import User
@@ -109,7 +109,8 @@ def admin_dashboard(request):
     total_security = User.objects.filter(role='security').count()
     pending_residents = User.objects.filter(role='resident', resident_profile__isnull=True)
     
-    active_bookings = FacilityBooking.objects.filter(status='approved').count()
+    total_facilities = Facility.objects.count()
+    active_bookings = FacilityBooking.objects.filter(status__in=['pending', 'confirmed']).count()
     total_expenses = SocietyExpense.objects.aggregate(Sum('amount'))['amount__sum'] or 0
     total_revenue = Invoice.objects.filter(status='paid').aggregate(Sum('amount'))['amount__sum'] or 0
     
@@ -117,6 +118,7 @@ def admin_dashboard(request):
         'total_residents': total_residents,
         'total_security': total_security,
         'pending_residents': pending_residents,
+        'total_facilities': total_facilities,
         'active_bookings': active_bookings,
         'total_expenses': total_expenses,
         'total_revenue': total_revenue,
@@ -359,7 +361,7 @@ def chatbot_api(request):
                     if facilities:
                         live_context += "Facilities Available for Booking:\n"
                         for fac in facilities:
-                            live_context += f"- ID {fac.id}: {fac.name} (Capacity: {fac.capacity}, Fee: {fac.booking_fee})\n"
+                            live_context += f"- ID {fac.id}: {fac.name} (Capacity: {fac.capacity}, Fee: {fac.fee})\n"
                             
                     # 5. Fetch Current Bookings
                     bookings = FacilityBooking.objects.filter(

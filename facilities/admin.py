@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import Facility, FacilityBooking
 
-# Register your models here.
+admin.site.register(Facility)
+admin.site.register(FacilityBooking)
