@@ -184,6 +184,4 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     
     # Add trusted origins if provided in .env (e.g. https://my-app.onrender.com)
-    csrf_trust = os.environ.get('CSRF_TRUSTED_ORIGINS')
-    if csrf_trust:
-        CSRF_TRUSTED_ORIGINS = csrf_trust.split(',')
+    CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://e-scoiety.onrender.com').split(',')
