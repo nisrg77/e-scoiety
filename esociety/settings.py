@@ -38,6 +38,10 @@ ALLOWED_HOSTS = ['*']
 # Gemini AI Integration
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 
+# Razorpay Payment Gateway
+RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')
+RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '')
+
 
 # Application definition
 

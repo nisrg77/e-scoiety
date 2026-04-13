@@ -1,7 +1,18 @@
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum
+from django.conf import settings
 from .models import Invoice, Payment, SocietyExpense
 from residents.models import ResidentProfile
+import razorpay
+
+# ---------------------------------------------------------------------------
+# Razorpay client (lazy init so missing keys don't crash on import)
+# ---------------------------------------------------------------------------
+def _razorpay_client():
+    return razorpay.Client(
+        auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
+    )
+
 
 def generate_monthly_invoices(year, month, amount, due_date, description="Monthly Maintenance"):
     """
@@ -35,26 +46,59 @@ def get_resident_invoices(resident_id):
     """
     return Invoice.objects.filter(resident_id=resident_id).order_by('-year', '-month')
 
-def record_payment(invoice_id, amount, transaction_id=None):
+def create_razorpay_order(amount_inr):
+    """
+    Creates a Razorpay order for the given amount (in INR).
+    Razorpay requires the amount in paise (1 INR = 100 paise).
+    Returns the full order dict from Razorpay.
+    """
+    client = _razorpay_client()
+    amount_paise = int(float(amount_inr) * 100)
+    order = client.order.create({
+        'amount': amount_paise,
+        'currency': 'INR',
+        'payment_capture': 1,  # Auto-capture on payment success
+    })
+    return order
+
+
+def verify_razorpay_signature(payment_id, order_id, signature):
+    """
+    Verifies the HMAC-SHA256 signature from Razorpay to ensure
+    the payment callback was not tampered with.
+    Returns True if valid, False otherwise.
+    """
+    client = _razorpay_client()
+    try:
+        client.utility.verify_payment_signature({
+            'razorpay_order_id': order_id,
+            'razorpay_payment_id': payment_id,
+            'razorpay_signature': signature,
+        })
+        return True
+    except razorpay.errors.SignatureVerificationError:
+        return False
+
+
+def record_payment(invoice_id, amount, transaction_id=None, razorpay_order_id=None):
     """
     Logs a Payment transaction against an Invoice. 
     If the cumulative payments equal or exceed the total invoice amount,
-    it automatically updates the Invoice status from 'unpaid' to 'paid'.
+    it automatically updates the Invoice status from 'unpaid' to 'pending' (awaiting admin approval).
     """
     invoice = get_object_or_404(Invoice, id=invoice_id)
     payment = Payment.objects.create(
         invoice=invoice,
         amount_paid=amount,
-        transaction_id=transaction_id
+        transaction_id=transaction_id,
+        razorpay_order_id=razorpay_order_id,
     )
     
     # Check if invoice is fully paid off.
-    # We use Django's aggregate() function to calculate the sum directly in the SQL database,
-    # rather than loading all payments into Python memory and summing them manually.
     total_paid = invoice.payments.aggregate(total=Sum('amount_paid'))['total'] or 0
     
     if total_paid >= invoice.amount:
-        invoice.status = 'pending' # Set to pending for admin approval
+        invoice.status = 'pending'  # Set to pending for admin approval
         invoice.save()
         
     return payment

@@ -22,19 +22,70 @@ def my_invoices_view(request):
 @login_required
 def pay_invoice_view(request, invoice_id):
     """
-    Mock payment processing endpoint for a specific invoice.
+    Creates a Razorpay order and renders the payment page.
+    The Razorpay checkout popup is opened automatically via JS.
     """
     if request.user.role != 'resident':
         return redirect('admin_dashboard')
-        
-    if request.method == 'POST':
-        amount = request.POST.get('amount')
-        transaction_id = request.POST.get('transaction_id')
-        services.record_payment(invoice_id, amount, transaction_id)
+
+    from .models import Invoice
+    from django.conf import settings
+
+    invoice = Invoice.objects.get(id=invoice_id)
+
+    # Don't allow payment on already paid/pending invoices
+    if invoice.status != 'unpaid':
         return redirect('my_invoices')
-        
-    return render(request, 'finance/pay_invoice.html', {'invoice_id': invoice_id})
-    
+
+    # Create a Razorpay order
+    order = services.create_razorpay_order(invoice.amount)
+
+    context = {
+        'invoice': invoice,
+        'razorpay_order_id': order['id'],
+        'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+        'amount_paise': order['amount'],  # Already in paise
+        'amount_inr': invoice.amount,
+        'user_name': request.user.get_full_name() or request.user.email,
+        'user_email': request.user.email,
+    }
+    return render(request, 'finance/pay_invoice.html', context)
+
+
+@login_required
+def verify_payment_view(request):
+    """
+    Handles the Razorpay payment callback.
+    Verifies the HMAC signature and records the payment if valid.
+    """
+    if request.user.role != 'resident':
+        return redirect('admin_dashboard')
+
+    if request.method != 'POST':
+        return redirect('my_invoices')
+
+    from django.contrib import messages
+
+    payment_id  = request.POST.get('razorpay_payment_id', '')
+    order_id    = request.POST.get('razorpay_order_id', '')
+    signature   = request.POST.get('razorpay_signature', '')
+    invoice_id  = request.POST.get('invoice_id', '')
+
+    # Verify the HMAC signature to prevent tampering
+    if services.verify_razorpay_signature(payment_id, order_id, signature):
+        invoice = Invoice.objects.get(id=invoice_id)
+        services.record_payment(
+            invoice_id=invoice_id,
+            amount=invoice.amount,
+            transaction_id=payment_id,
+            razorpay_order_id=order_id,
+        )
+        messages.success(request, f"✅ Payment of ₹{invoice.amount} received! Pending admin verification.")
+    else:
+        messages.error(request, "❌ Payment verification failed. Please contact support.")
+
+    return redirect('my_invoices')
+
 @login_required
 def expense_report_view(request):
     """

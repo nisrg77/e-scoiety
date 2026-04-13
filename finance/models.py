@@ -35,7 +35,8 @@ class Payment(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name='payments')
     amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateTimeField(auto_now_add=True)
-    transaction_id = models.CharField(max_length=100, unique=True, blank=True, null=True)
+    transaction_id = models.CharField(max_length=100, unique=True, blank=True, null=True)  # Razorpay payment_id
+    razorpay_order_id = models.CharField(max_length=100, blank=True, null=True)  # Razorpay order_id
 
     class Meta:
         verbose_name_plural = "Payments"
