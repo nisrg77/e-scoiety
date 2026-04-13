@@ -15,7 +15,10 @@ def create_visitor_request(resident_id, visitor_data):
         name=visitor_data.get('name'),
         phone=visitor_data.get('phone'),
         purpose=visitor_data.get('purpose'),
-        vehicle_number=visitor_data.get('vehicle_number', '')
+        vehicle_number=visitor_data.get('vehicle_number', ''),
+        visit_date=visitor_data.get('visit_date'),
+        visit_time=visitor_data.get('visit_time'),
+        description=visitor_data.get('description', '')
     )
 
 def update_visitor_status(visitor_id, new_status):

@@ -17,6 +17,9 @@ def add_visitor_view(request):
             'phone': request.POST.get('phone'),
             'purpose': request.POST.get('purpose'),
             'vehicle_number': request.POST.get('vehicle_number'),
+            'visit_date': request.POST.get('visit_date') or None,
+            'visit_time': request.POST.get('visit_time') or None,
+            'description': request.POST.get('description'),
         }
         
         profile = ResidentProfile.objects.filter(user=request.user).first()

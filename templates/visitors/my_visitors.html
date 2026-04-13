@@ -29,6 +29,16 @@
                     <p class="text-xs text-on-surface-variant font-medium mt-0.5">
                         {{ visitor.purpose }} • {{ visitor.phone }}
                     </p>
+                    {% if visitor.visit_date or visitor.visit_time %}
+                    <p class="text-[11px] text-on-surface-variant mt-1.5 font-medium flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[13px] text-primary/70">event</span>
+                        {% if visitor.visit_date %}{{ visitor.visit_date|date:"j M, Y" }}{% else %}Any date{% endif %} 
+                        {% if visitor.visit_time %}at {{ visitor.visit_time|time:"g:i A" }}{% endif %}
+                    </p>
+                    {% endif %}
+                    {% if visitor.description %}
+                    <p class="text-[11px] text-on-surface-variant mt-1 italic">"{{ visitor.description }}"</p>
+                    {% endif %}
                     {% if visitor.vehicle_number %}
                     <p class="text-[10px] text-outline mt-1 uppercase tracking-widest"><span class="font-semibold">Vehicle:</span> {{ visitor.vehicle_number }}</p>
                     {% endif %}

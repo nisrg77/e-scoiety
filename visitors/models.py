@@ -21,6 +21,11 @@ class Visitor(models.Model):
     purpose = models.CharField(max_length=255) # e.g., "Guest", "Delivery", "Maintenance"
     vehicle_number = models.CharField(max_length=20, blank=True, null=True)
     
+    # Expected visit details
+    visit_date = models.DateField(blank=True, null=True)
+    visit_time = models.TimeField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    
     # Tracking the timeline
     entry_time = models.DateTimeField(auto_now_add=True)
     exit_time = models.DateTimeField(blank=True, null=True)
