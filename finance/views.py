@@ -46,7 +46,7 @@ def pay_invoice_view(request, invoice_id):
         'razorpay_key_id': settings.RAZORPAY_KEY_ID,
         'amount_paise': order['amount'],  # Already in paise
         'amount_inr': invoice.amount,
-        'user_name': request.user.get_full_name() or request.user.email,
+        'user_name': getattr(request.user, 'first_name', '') + ' ' + getattr(request.user, 'last_name', '') if hasattr(request.user, 'first_name') else request.user.email,
         'user_email': request.user.email,
     }
     return render(request, 'finance/pay_invoice.html', context)

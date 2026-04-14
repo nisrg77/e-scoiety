@@ -56,13 +56,16 @@ def userLoginView(request):
     if form.is_valid():
       email = form.cleaned_data['email']
       password = form.cleaned_data['password']
-      
       # Verifies the provided email and password against the database
       user = authenticate(request,email=email,password=password)
+      
+      from django.contrib import messages
+
       
       if user: # If user exists and password is correct
         # Sets the session cookie in the user's browser securely
         login(request,user)
+        messages.success(request, f"Welcome back! Login successful.")
         
         # RBAC Routing: Send user to their corresponding dashboard
         if user.role == "admin":
@@ -73,9 +76,11 @@ def userLoginView(request):
           return redirect("security_dashboard")
       
       # Authentication failed (wrong password or user not found)
-      return render(request, 'core/login.html', {'form': form, 'error': 'Invalid email or password.'})
+      messages.error(request, 'Invalid email or password.')
+      return render(request, 'core/login.html', {'form': form})
     
     # Form validation failed (e.g. empty fields)
+    messages.error(request, 'Please correct the errors below.')
     return render(request,'core/login.html',{'form':form})
     
   else:
@@ -89,7 +94,9 @@ def userLogoutView(request):
     Redirects to the login page.
     """
     from django.contrib.auth import logout
+    from django.contrib import messages
     logout(request)
+    messages.success(request, "You have been logged out successfully.")
     return redirect('login')
 
 # Role-based decorators block unauthorized users from viewing the dashboard
@@ -345,7 +352,8 @@ def reset_password(request):
 
 import json
 from django.http import JsonResponse
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 # Import models to provide live context
 from residents.models import ResidentProfile
@@ -432,9 +440,14 @@ def chatbot_api(request):
                 return JsonResponse({'response': "AI API key is not configured. Please check server settings."})
                 
             try:
-                genai.configure(api_key=gemini_key)
-                model = genai.GenerativeModel('gemini-2.5-flash', system_instruction=system_instruction)
-                response = model.generate_content(message)
+                client = genai.Client(api_key=gemini_key)
+                response = client.models.generate_content(
+                    model='gemini-2.5-flash',
+                    contents=message,
+                    config=types.GenerateContentConfig(
+                        system_instruction=system_instruction,
+                    )
+                )
                 reply_text = response.text
                 
                 # Intercept Action Tags
