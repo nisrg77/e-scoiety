@@ -2,6 +2,9 @@
  * eSociety Chatbot JS Interface
  */
 
+// Maintain conversation history in memory
+let chatHistory = [];
+
 function toggleChatbot() {
     const chatWindow = document.getElementById('chatbot-window');
     const toggleBtnIcon = document.querySelector('#chatbot-toggle span');
@@ -47,6 +50,9 @@ async function handleChatbotSubmit(event) {
     inputField.value = '';
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
+    // Save to history
+    chatHistory.push({ role: 'user', content: message });
+
     // Add loading indicator
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'self-start max-w-[85%] loading-msg';
@@ -62,13 +68,17 @@ async function handleChatbotSubmit(event) {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrftoken
             },
-            body: JSON.stringify({ message: message })
+            // Send both current message AND context
+            body: JSON.stringify({ 
+                message: message,
+                history: chatHistory.slice(0, -1) // Send previous history (excluding current msg which backend handles)
+            })
         });
 
         const data = await response.json();
         
         // Remove loading
-        messagesContainer.removeChild(loadingDiv);
+        if (loadingDiv.parentNode) messagesContainer.removeChild(loadingDiv);
 
         // Add bot response
         const botMsgDiv = document.createElement('div');
@@ -79,6 +89,14 @@ async function handleChatbotSubmit(event) {
         
         let rawText = data.response || "Sorry, I couldn't process that.";
         
+        // Save bot response to history
+        chatHistory.push({ role: 'assistant', content: rawText });
+        
+        // Keep history size manageable (last 40 turns max)
+        if (chatHistory.length > 40) {
+            chatHistory = chatHistory.slice(-40);
+        }
+
         if (typeof marked !== 'undefined') {
             // Use marked library loaded in base.html
             marked.use({ breaks: true });
@@ -99,7 +117,7 @@ async function handleChatbotSubmit(event) {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
     } catch (error) {
-        messagesContainer.removeChild(loadingDiv);
+        if (loadingDiv.parentNode) messagesContainer.removeChild(loadingDiv);
         const errorDiv = document.createElement('div');
         errorDiv.className = 'self-start max-w-[85%]';
         errorDiv.innerHTML = `<div class="bg-[#ffdad6] text-[#93000a] p-3 rounded-2xl rounded-tl-sm shadow-sm">Connection error. Please try again later.</div>`;

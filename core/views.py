@@ -351,7 +351,10 @@ def reset_password(request):
     return render(request, 'core/reset_password.html')
 
 import json
+import re
 from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+
 from google import genai
 from google.genai import types
 
@@ -360,140 +363,157 @@ from residents.models import ResidentProfile
 from complaints.models import Complaint
 from finance.models import Invoice
 from facilities.models import Facility, FacilityBooking
-import re
 
-
+@require_http_methods(["GET", "POST"])
 def chatbot_api(request):
     """
-    API endpoint that receives a message from the frontend,
-    sends it to Gemini (Free Tier) or OpenAI (Fallback), 
-    and returns the response.
+    GET  → returns JSON with chatbot status.
+    POST → accepts {"message": "...", "history": []}, replies with {"response": "..."}.
     """
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            message = data.get('message', '')
-            
-            # --- Live Context Injection ---
-            live_context = "--- LIVE SYSTEM DATA ---\n"
-            
-            # 1. Fetch Resident Profile if logged in
-            if request.user.is_authenticated:
-                try:
-                    profile = ResidentProfile.objects.get(user=request.user)
-                    live_context += f"User Email: {request.user.email}\n"
-                    live_context += f"Flat: {profile.flat.number if profile.flat else 'Not Assigned'}\n"
-                    
-                    # 2. Fetch Latest 3 Invoices
-                    invoices = Invoice.objects.filter(resident=profile).order_by('-year', '-month')[:3]
-                    if invoices:
-                        live_context += "Invoices:\n"
-                        for inv in invoices:
-                            live_context += f"- {inv.month}/{inv.year}: {inv.amount} ({inv.get_status_display()})\n"
-                    
-                    # 3. Fetch Recent Complaints
-                    complaints = Complaint.objects.filter(resident=profile).order_by('-created_at')[:3]
-                    if complaints:
-                        live_context += "Complaints:\n"
-                        for comp in complaints:
-                            live_context += f"- {comp.title}: {comp.get_status_display()} (Category: {comp.get_category_display()})\n"
-                            
-                    # 4. Fetch Available Facilities
-                    facilities = Facility.objects.all()
-                    if facilities:
-                        live_context += "Facilities Available for Booking:\n"
-                        for fac in facilities:
-                            live_context += f"- ID {fac.id}: {fac.name} (Capacity: {fac.capacity}, Fee: {fac.fee})\n"
-                            
-                    # 5. Fetch Current Bookings
-                    bookings = FacilityBooking.objects.filter(
-                        resident=profile, 
-                        status__in=['pending', 'confirmed']
-                    ).order_by('date')
-                    if bookings:
-                        live_context += "Your Current Active Bookings:\n"
-                        for b in bookings:
-                            live_context += f"- Booking ID {b.id}: Facility ID {b.facility.id} ({b.facility.name}) on {b.date} from {b.start_time.strftime('%H:%M')} to {b.end_time.strftime('%H:%M')}\n"
-                            
-                except ResidentProfile.DoesNotExist:
-                    live_context += "Current User: Unassigned/Guest\n"
-            else:
-                live_context += "Current User: Not logged in\n"
 
-            # Common System Context
-            system_instruction = (
-                "You are the AI Assistant for the 'eSociety' Management System.\n"
-                "You have access to the user's live data provided below. Use this data to answer accurately.\n\n"
-                f"{live_context}\n"
-                "Guidelines:\n"
-                "1. If asked about bills, refer to the 'Invoices' list above.\n"
-                "2. If asked about complaints, refer to the 'Complaints' list above.\n"
-                "3. To BOOK a facility, if you have Facility ID, date (YYYY-MM-DD), start_time (HH:MM), and end_time (HH:MM), you MUST output EXACTLY this tag anywhere in your text: [ACTION:BOOK|facility_id|YYYY-MM-DD|HH:MM|HH:MM]\n"
-                "4. To EDIT a booking, if you have Booking ID, Facility ID, date, start_time, and end_time, output EXACTLY this tag: [ACTION:EDIT|booking_id|facility_id|YYYY-MM-DD|HH:MM|HH:MM]\n"
-                "5. Only output the ACTION tag if you have ALL required details from the user. If missing, politely ask the user for them.\n"
-                "6. Write a short friendly text along with the tag.\n"
-            )
+    # ── GET: health / info ──────────────────────────────
+    if request.method == 'GET':
+        return JsonResponse({
+            'status': 'ok',
+            'ai_provider': 'gemini'
+        })
 
-            # --- Use Google Gemini (Free Tier) ---
-            gemini_key = settings.GEMINI_API_KEY
-            if not gemini_key:
-                return JsonResponse({'response': "AI API key is not configured. Please check server settings."})
-                
+    # ── POST: chat interaction ──────────────────────────
+    try:
+        data = json.loads(request.body)
+        message = data.get('message', '').strip()
+        history = data.get('history', [])
+        
+        if not message:
+            return JsonResponse({'error': 'Message cannot be empty.'}, status=400)
+
+        # --- Live Context Injection ---
+        live_context = "--- LIVE SYSTEM DATA ---\n"
+
+        if request.user.is_authenticated:
             try:
-                client = genai.Client(api_key=gemini_key)
-                response = client.models.generate_content(
-                    model='gemini-2.5-flash',
-                    contents=message,
-                    config=types.GenerateContentConfig(
-                        system_instruction=system_instruction,
-                    )
-                )
-                reply_text = response.text
-                
-                # Intercept Action Tags
-                match_book = re.search(r'\[ACTION:BOOK\|(\d+)\|([\d-]+)\|([\d:]+)\|([\d:]+)\]', reply_text)
-                if match_book and request.user.is_authenticated:
-                    fac_id, date_str, start_str, end_str = match_book.groups()
-                    try:
-                        from facilities.services import book_facility
-                        profile = ResidentProfile.objects.get(user=request.user)
-                        book_facility(
-                            facility_id=int(fac_id), 
-                            date=date_str, 
-                            start_time=start_str, 
-                            end_time=end_str, 
-                            resident_id=profile.id
-                        )
-                        reply_text = reply_text.replace(match_book.group(0), "")
-                        reply_text = "✅ **Action Successful:** I have booked that timeslot for you.\n" + reply_text
-                    except Exception as e:
-                        reply_text = reply_text.replace(match_book.group(0), "")
-                        reply_text = f"❌ **Action Failed:** {str(e)}\n" + reply_text
+                profile = ResidentProfile.objects.get(user=request.user)
+                live_context += f"User Email: {request.user.email}\n"
+                live_context += f"Flat: {profile.flat.number if profile.flat else 'Not Assigned'}\n"
 
-                match_edit = re.search(r'\[ACTION:EDIT\|(\d+)\|(\d+)\|([\d-]+)\|([\d:]+)\|([\d:]+)\]', reply_text)
-                if match_edit and request.user.is_authenticated:
-                    booking_id, fac_id, date_str, start_str, end_str = match_edit.groups()
-                    try:
-                        from facilities.services import edit_booking
-                        edit_booking(
-                            booking_id=int(booking_id),
-                            user=request.user,
-                            facility_id=int(fac_id),
-                            date=date_str,
-                            start_time=start_str,
-                            end_time=end_str
-                        )
-                        reply_text = reply_text.replace(match_edit.group(0), "")
-                        reply_text = "✅ **Action Successful:** Your booking has been updated.\n" + reply_text
-                    except Exception as e:
-                        reply_text = reply_text.replace(match_edit.group(0), "")
-                        reply_text = f"❌ **Action Failed:** {str(e)}\n" + reply_text
-                
-                return JsonResponse({'response': reply_text.strip()})
-            except Exception as e:
-                return JsonResponse({'response': f"The AI Assistant is currently unavailable. Error: {str(e)}"}, status=500)
-                
+                invoices = Invoice.objects.filter(resident=profile).order_by('-year', '-month')[:3]
+                if invoices:
+                    live_context += "Invoices:\n"
+                    for inv in invoices:
+                        live_context += f"- {inv.month}/{inv.year}: {inv.amount} ({inv.get_status_display()})\n"
+
+                complaints = Complaint.objects.filter(resident=profile).order_by('-created_at')[:3]
+                if complaints:
+                    live_context += "Complaints:\n"
+                    for comp in complaints:
+                        live_context += f"- {comp.title}: {comp.get_status_display()} (Category: {comp.get_category_display()})\n"
+
+                facilities = Facility.objects.all()
+                if facilities:
+                    live_context += "Facilities Available for Booking:\n"
+                    for fac in facilities:
+                        live_context += f"- ID {fac.id}: {fac.name} (Capacity: {fac.capacity}, Fee: {fac.fee})\n"
+
+                bookings = FacilityBooking.objects.filter(
+                    resident=profile,
+                    status__in=['pending', 'confirmed']
+                ).order_by('date')
+                if bookings:
+                    live_context += "Your Current Active Bookings:\n"
+                    for b in bookings:
+                        live_context += f"- Booking ID {b.id}: Facility ID {b.facility.id} ({b.facility.name}) on {b.date} from {b.start_time.strftime('%H:%M')} to {b.end_time.strftime('%H:%M')}\n"
+
+            except ResidentProfile.DoesNotExist:
+                live_context += "Current User: Unassigned/Guest\n"
+        else:
+            live_context += "Current User: Not logged in\n"
+
+        system_instruction = (
+            "You are the AI Assistant for the 'eSociety' Management System.\n"
+            "You have access to the user's live data provided below. Use this data to answer accurately.\n"
+            f"{live_context}\n"
+            "Guidelines:\n"
+            "1. If asked about bills, refer to the 'Invoices' list above.\n"
+            "2. If asked about complaints, refer to the 'Complaints' list above.\n"
+            "3. To BOOK a facility, if you have Facility ID, date (YYYY-MM-DD), start_time (HH:MM), and end_time (HH:MM), you MUST output EXACTLY this tag anywhere in your text: [ACTION:BOOK|facility_id|YYYY-MM-DD|HH:MM|HH:MM]\n"
+            "4. To EDIT a booking, if you have Booking ID, Facility ID, date, start_time, and end_time, output EXACTLY this tag: [ACTION:EDIT|booking_id|facility_id|YYYY-MM-DD|HH:MM|HH:MM]\n"
+            "5. Only output the ACTION tag if you have ALL required details from the user. If missing, politely ask the user for them.\n"
+            "6. Write a short friendly text along with the tag.\n"
+            "7. ALWAYS take context into account as the user might be referring to past messages.\n"
+        )
+
+        gemini_key = settings.GEMINI_API_KEY
+        if not gemini_key:
+            return JsonResponse({'response': "AI API key is not configured. Please check server settings."})
+            
+        try:
+            client = genai.Client(api_key=gemini_key)
+            
+            # Process history for Gemini (roles: 'user' and 'model')
+            contents = []
+            if history:
+                for turn in history:
+                    role = 'user' if turn.get('role') == 'user' else 'model'
+                    contents.append(types.Content(role=role, parts=[types.Part.from_text(text=turn.get('content', ''))]))
+            
+            # Add current message
+            contents.append(types.Content(role='user', parts=[types.Part.from_text(text=message)]))
+
+            response = client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    system_instruction=system_instruction,
+                )
+            )
+            reply_text = response.text
         except Exception as e:
-            return JsonResponse({'response': f"Internal Server Error: {str(e)}"}, status=500)
-    
-    return JsonResponse({'error': 'Only POST method is allowed'}, status=405)
+            return JsonResponse({
+                'response': f"The AI Assistant is currently unavailable. Error: {str(e)}"
+            }, status=500)
+
+        # ── Intercept Action Tags ───────────────────────
+        match_book = re.search(r'\[ACTION:BOOK\|(\d+)\|([\d-]+)\|([\d:]+)\|([\d:]+)\]', reply_text)
+        if match_book and request.user.is_authenticated:
+            fac_id, date_str, start_str, end_str = match_book.groups()
+            try:
+                from facilities.services import book_facility
+                profile = ResidentProfile.objects.get(user=request.user)
+                book_facility(
+                    facility_id=int(fac_id),
+                    date=date_str,
+                    start_time=start_str,
+                    end_time=end_str,
+                    resident_id=profile.id
+                )
+                reply_text = reply_text.replace(match_book.group(0), "")
+                reply_text = "✅ **Action Successful:** I have booked that timeslot for you.\n" + reply_text
+            except Exception as e:
+                reply_text = reply_text.replace(match_book.group(0), "")
+                reply_text = f"❌ **Action Failed:** {str(e)}\n" + reply_text
+
+        match_edit = re.search(r'\[ACTION:EDIT\|(\d+)\|(\d+)\|([\d-]+)\|([\d:]+)\|([\d:]+)\]', reply_text)
+        if match_edit and request.user.is_authenticated:
+            booking_id, fac_id, date_str, start_str, end_str = match_edit.groups()
+            try:
+                from facilities.services import edit_booking
+                edit_booking(
+                    booking_id=int(booking_id),
+                    user=request.user,
+                    facility_id=int(fac_id),
+                    date=date_str,
+                    start_time=start_str,
+                    end_time=end_str
+                )
+                reply_text = reply_text.replace(match_edit.group(0), "")
+                reply_text = "✅ **Action Successful:** Your booking has been updated.\n" + reply_text
+            except Exception as e:
+                reply_text = reply_text.replace(match_edit.group(0), "")
+                reply_text = f"❌ **Action Failed:** {str(e)}\n" + reply_text
+
+        return JsonResponse({'response': reply_text.strip()})
+
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON in request body.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': f"Internal Server Error: {str(e)}"}, status=500)
