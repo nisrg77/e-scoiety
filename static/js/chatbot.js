@@ -28,10 +28,10 @@ function showInitialOptions() {
     const messagesContainer = document.getElementById('chatbot-messages');
     
     const options = [
-        { text: "💰 Check My Invoices", value: "Show my pending invoices" },
-        { text: "🏢 Book a Facility", value: "How do I book a facility?" },
-        { text: "📝 File a Complaint", value: "I want to file a complaint" },
-        { text: "📢 Recent Notices", value: "Show me recent society notices" }
+        { text: "💰 Check My Bills", value: "Show my pending maintenance bills and invoices" },
+        { text: "🏢 Book a Facility", value: "I want to book a facility like the Gym or Hall. How do I pay for it?" },
+        { text: "📅 My Bookings", value: "Show my current facility bookings and their payment status" },
+        { text: "📝 File a Complaint", value: "I have an issue with the society services, I want to file a complaint" }
     ];
 
     const optionsDiv = document.createElement('div');

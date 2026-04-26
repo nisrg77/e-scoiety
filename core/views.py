@@ -421,7 +421,7 @@ def chatbot_api(request):
                 if bookings:
                     live_context += "Your Current Active Bookings:\n"
                     for b in bookings:
-                        live_context += f"- Booking ID {b.id}: Facility ID {b.facility.id} ({b.facility.name}) on {b.date} from {b.start_time.strftime('%H:%M')} to {b.end_time.strftime('%H:%M')}\n"
+                        live_context += f"- Booking ID {b.id}: {b.facility.name} on {b.date} ({b.get_payment_status_display()})\n"
 
             except ResidentProfile.DoesNotExist:
                 live_context += "Current User: Unassigned/Guest\n"
@@ -438,8 +438,9 @@ def chatbot_api(request):
             "3. To BOOK a facility, if you have Facility ID, date (YYYY-MM-DD), start_time (HH:MM), and end_time (HH:MM), you MUST output EXACTLY this tag anywhere in your text: [ACTION:BOOK|facility_id|YYYY-MM-DD|HH:MM|HH:MM]\n"
             "4. To EDIT a booking, if you have Booking ID, Facility ID, date, start_time, and end_time, output EXACTLY this tag: [ACTION:EDIT|booking_id|facility_id|YYYY-MM-DD|HH:MM|HH:MM]\n"
             "5. Only output the ACTION tag if you have ALL required details from the user. If missing, politely ask the user for them.\n"
-            "6. Write a short friendly text along with the tag.\n"
-            "7. ALWAYS take context into account as the user might be referring to past messages.\n"
+            "6. IMPORTANT: If a user books a PAID facility (fee > 0), inform them that their booking is currently 'Pending' and they MUST go to the 'My Bookings' page to complete the payment for it to be confirmed.\n"
+            "7. Write a short friendly text along with the tag.\n"
+            "8. ALWAYS take context into account as the user might be referring to past messages.\n"
         )
 
         gemini_key = settings.GEMINI_API_KEY
