@@ -646,3 +646,102 @@
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
         .page-header h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 22px; font-weight: 800; color: #191c1f; margin: 0; }
         .page-header p  { color: #464554; font-size: 14px; margin: 0; }
+
+        /* ===========================
+           DARK MODE SUPPORT
+        =========================== */
+        html.dark body {
+            background: #0f1114;
+            color: #eff1f5;
+        }
+
+        html.dark .sidebar {
+            background: rgba(30, 32, 35, 0.82);
+            border-right-color: rgba(255, 255, 255, 0.1);
+        }
+
+        html.dark .sidebar-brand-icon {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        html.dark .sidebar-brand h1 { color: #eff1f5; }
+        html.dark .sidebar-brand p { color: #a1a1aa; }
+        html.dark .nav-item { color: #a1a1aa; }
+        html.dark .nav-item:hover { background: rgba(90, 90, 230, 0.15); color: #8fafff; }
+        html.dark .nav-item.active { background: rgba(90, 90, 230, 0.2); color: #8fafff; }
+
+        html.dark .top-header {
+            background: rgba(15, 17, 20, 0.85);
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        html.dark .page-title-text { color: #eff1f5; }
+        html.dark .notif-btn { color: #a1a1aa; }
+        html.dark .notif-btn:hover { background: #2e3134; }
+        html.dark .user-chip { background: #1e2023; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
+        html.dark .user-name { color: #eff1f5; }
+        html.dark .user-role { color: #a1a1aa; }
+
+        html.dark .ll-card, html.dark .kpi-card, html.dark .stat-card, html.dark .glass-card, html.dark .ll-card-flat {
+            background: #1e2023;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+        }
+        html.dark .ll-card:hover, html.dark .kpi-card:hover, html.dark .stat-card:hover {
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        html.dark .kpi-num, html.dark .stat-number, html.dark .section-title, html.dark .page-header h2 {
+            color: #eff1f5;
+        }
+
+        html.dark .kpi-label, html.dark .stat-label, html.dark .text-muted-ll, html.dark .page-header p, html.dark .ll-label, html.dark .form-label {
+            color: #a1a1aa;
+        }
+
+        html.dark .ll-input, html.dark .ll-select, html.dark .ll-textarea, html.dark .form-control, html.dark .form-select {
+            background: #2e3134;
+            color: #eff1f5;
+        }
+        html.dark .ll-input:focus, html.dark .ll-select:focus, html.dark .ll-textarea:focus, html.dark .form-control:focus, html.dark .form-select:focus {
+            background: #1e2023;
+            box-shadow: 0 0 0 2px rgba(90, 90, 230, 0.5);
+        }
+
+        html.dark .divider-ll { background: rgba(255, 255, 255, 0.1); }
+
+        html.dark .bottom-nav {
+            background: rgba(30, 32, 35, 0.90);
+            border-top-color: rgba(255, 255, 255, 0.1);
+        }
+        html.dark .bottom-nav-item { color: #a1a1aa; }
+        html.dark .bottom-nav-item.active { background: rgba(90, 90, 230, 0.2); color: #8fafff; }
+
+        html.dark .es-table tbody tr:hover { background: #25282c; }
+        html.dark .es-table tbody td { border-top-color: rgba(255, 255, 255, 0.1); color: #eff1f5; }
+        html.dark .es-table thead th { color: #a1a1aa; }
+
+        html.dark .poll-option-btn { background: #2e3134; color: #eff1f5; border-color: rgba(255, 255, 255, 0.1); }
+        html.dark .poll-option-btn:hover { background: rgba(90, 90, 230, 0.1); border-color: #5a5ae6; }
+
+        html.dark .badge-closed, html.dark .badge-exited { background: rgba(161, 161, 170, 0.15); color: #d4d4d8; }
+
+        /* Fix for Chatbot Widget in Dark Mode */
+        html.dark #chatbot-window {
+            background: #1e2023;
+            border-color: #2e3134;
+        }
+        html.dark #chatbot-messages {
+            background: #0f1114;
+        }
+        html.dark #chatbot-messages .bg-white {
+            background: #1e2023;
+            border-color: #2e3134;
+            color: #eff1f5;
+        }
+        html.dark #chatbot-input {
+            background: #2e3134;
+            color: #eff1f5;
+        }
+        html.dark #chatbot-input:focus {
+            background: #1e2023;
+        }
