@@ -12,11 +12,46 @@ function toggleChatbot() {
         chatWindow.classList.remove('hidden');
         chatWindow.classList.add('flex');
         toggleBtnIcon.textContent = 'expand_more';
+        
+        // Show initial options if history is empty
+        if (chatHistory.length === 0) {
+            showInitialOptions();
+        }
     } else {
         chatWindow.classList.add('hidden');
         chatWindow.classList.remove('flex');
         toggleBtnIcon.textContent = 'chat';
     }
+}
+
+function showInitialOptions() {
+    const messagesContainer = document.getElementById('chatbot-messages');
+    
+    const options = [
+        { text: "💰 Check My Invoices", value: "Show my pending invoices" },
+        { text: "🏢 Book a Facility", value: "How do I book a facility?" },
+        { text: "📝 File a Complaint", value: "I want to file a complaint" },
+        { text: "📢 Recent Notices", value: "Show me recent society notices" }
+    ];
+
+    const optionsDiv = document.createElement('div');
+    optionsDiv.className = 'flex flex-wrap gap-2 mt-2 initial-options';
+    
+    options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'bg-white border border-primary/20 text-primary text-[11px] font-bold px-3 py-2 rounded-xl hover:bg-primary hover:text-white transition-all shadow-sm';
+        btn.textContent = opt.text;
+        btn.onclick = () => {
+            const inputField = document.getElementById('chatbot-input');
+            inputField.value = opt.value;
+            document.getElementById('chatbot-form').dispatchEvent(new Event('submit'));
+            optionsDiv.remove(); // Remove options after one is clicked
+        };
+        optionsDiv.appendChild(btn);
+    });
+    
+    messagesContainer.appendChild(optionsDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 function getCookie(name) {

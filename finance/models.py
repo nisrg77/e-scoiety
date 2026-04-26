@@ -21,6 +21,14 @@ class Invoice(models.Model):
     due_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def is_paid(self):
+        return self.status == 'paid'
+
+    @property
+    def is_pending(self):
+        return self.status == 'pending'
+
     class Meta:
         verbose_name_plural = "Invoices"
 

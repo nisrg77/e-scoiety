@@ -170,26 +170,63 @@ def api_facility_bookings(request, facility_id):
 @login_required
 def pay_booking_view(request, booking_id):
     """
-    Resident view to pay for a facility booking.
+    Resident view to pay for a facility booking using Razorpay.
     """
     if request.user.role != 'resident':
         return redirect('admin_dashboard')
         
+    from django.conf import settings
     try:
         profile = ResidentProfile.objects.get(user=request.user)
         booking = FacilityBooking.objects.get(id=booking_id, resident=profile, payment_status='unpaid')
     except (ResidentProfile.DoesNotExist, FacilityBooking.DoesNotExist):
         return redirect('my_bookings')
         
-    if request.method == 'POST':
-        # Simulate payment processing (in reality, verify against a gateway)
-        transaction_id = request.POST.get('transaction_id')
-        if transaction_id:
-            booking.payment_status = 'paid'
-            booking.save()
-            return redirect('my_bookings')
+    # Create a Razorpay order
+    order = services.create_booking_razorpay_order(booking.facility.fee)
+
+    context = {
+        'booking': booking,
+        'razorpay_order_id': order['id'],
+        'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+        'amount_paise': order['amount'],
+        'amount_inr': booking.facility.fee,
+        'user_name': getattr(request.user, 'first_name', '') + ' ' + getattr(request.user, 'last_name', '') if hasattr(request.user, 'first_name') else request.user.email,
+        'user_email': request.user.email,
+    }
             
-    return render(request, 'facilities/pay_booking.html', {'booking': booking})
+    return render(request, 'facilities/pay_booking.html', context)
+
+
+@login_required
+def verify_booking_payment_view(request):
+    """
+    Handles the Razorpay payment callback for facility bookings.
+    """
+    if request.user.role != 'resident':
+        return redirect('admin_dashboard')
+
+    if request.method != 'POST':
+        return redirect('my_bookings')
+
+    from django.contrib import messages
+
+    payment_id  = request.POST.get('razorpay_payment_id', '')
+    order_id    = request.POST.get('razorpay_order_id', '')
+    signature   = request.POST.get('razorpay_signature', '')
+    booking_id  = request.POST.get('booking_id', '')
+
+    if services.verify_booking_payment_signature(payment_id, order_id, signature):
+        booking = FacilityBooking.objects.get(id=booking_id)
+        booking.payment_status = 'paid'
+        # Also auto-approve if payment is successful (optional, or keep as pending)
+        # booking.status = 'confirmed' 
+        booking.save()
+        messages.success(request, f"✅ Payment for {booking.facility.name} received! Booking is now being processed.")
+    else:
+        messages.error(request, "❌ Payment verification failed. Please contact support.")
+
+    return redirect('my_bookings')
 
 
 @login_required

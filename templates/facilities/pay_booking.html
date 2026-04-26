@@ -17,46 +17,77 @@
             <p class="text-on-surface-variant text-sm mt-1 text-center">{{ booking.facility.name }} on {{ booking.date|date:"M d, Y" }}</p>
         </div>
 
-        <form method="POST" class="space-y-5">
+        <!-- Hidden form to submit to our verify backend -->
+        <form id="razorpay-form" action="{% url 'verify_booking_payment' %}" method="POST" class="hidden">
             {% csrf_token %}
-            
-            <div>
-                <label class="block text-xs font-semibold text-on-surface mb-1.5 uppercase tracking-wider">Booking Fee amount</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <span class="text-on-surface font-bold text-lg">₹</span>
-                    </div>
-                    <input type="text" name="amount" value="{{ booking.facility.booking_fee }}" readonly class="w-full bg-surface-container-low border border-outline-variant/50 rounded-xl pl-10 pr-4 py-4 text-xl font-bold text-on-surface focus:outline-none focus:ring-0 cursor-default">
-                </div>
-            </div>
-            
-            <div>
-                <label class="block text-xs font-semibold text-on-surface mb-1.5 uppercase tracking-wider">Transaction / UTR ID <span class="text-error">*</span></label>
-                <div class="relative">
-                    <span class="material-symbols-outlined text-outline absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">receipt_long</span>
-                    <input type="text" name="transaction_id" required class="w-full bg-surface border border-outline-variant rounded-xl pl-10 pr-4 py-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-medium" placeholder="e.g. UPI123456789">
-                </div>
-                <p class="text-[11px] text-on-surface-variant mt-1.5">Enter the reference ID from your bank or UPI app.</p>
-            </div>
+            <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+            <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+            <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+            <input type="hidden" name="booking_id" value="{{ booking.id }}">
+        </form>
+
+        <div class="text-center space-y-5">
+            <p class="text-3xl font-extrabold text-on-surface">₹{{ amount_inr }}</p>
             
             <!-- Info Box -->
-            <div class="p-4 rounded-xl bg-tertiary/10 border border-tertiary/20 flex gap-3 text-tertiary-dark">
-                <span class="material-symbols-outlined shrink-0 text-xl">info</span>
+            <div class="p-4 rounded-xl bg-primary/10 border border-primary/20 flex gap-3 text-primary-dark text-left">
+                <span class="material-symbols-outlined shrink-0 text-xl">shield</span>
                 <p class="text-xs font-medium leading-relaxed">
-                    Transfer the fee to the society bank account before submitting. Your booking remains pending until payment is verified by the admin.
+                    You will be securely redirected to Razorpay to complete your booking fee. Supports UPI, Net Banking, and Cards.
                 </p>
             </div>
             
-            <div class="flex gap-4 pt-2">
+            <div class="flex gap-4 pt-4">
                 <a href="{% url 'my_bookings' %}" class="flex-1 px-4 py-3 rounded-xl border-2 border-outline-variant/50 text-on-surface-variant font-bold text-center hover:bg-surface-container hover:text-on-surface transition-colors">
                     Cancel
                 </a>
-                <button type="submit" class="flex-[2] flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg transition-all active:scale-95">
-                    <span class="material-symbols-outlined text-[20px]">check_circle</span>
-                    Confirm Payment
+                <button id="rzp-button1" class="flex-[2] flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg transition-all active:scale-95">
+                    <span class="material-symbols-outlined text-[20px]">lock</span>
+                    Pay Securely
                 </button>
             </div>
-        </form>
+        </div>
+    </div>
+</div>
+
+<!-- Razorpay Checkout Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+var options = {
+    "key": "{{ razorpay_key_id }}",
+    "amount": "{{ amount_paise }}",
+    "currency": "INR",
+    "name": "eSociety Facilities",
+    "description": "Booking Fee: {{ booking.facility.name }}",
+    "image": "https://cdn-icons-png.flaticon.com/512/2942/2942821.png",
+    "order_id": "{{ razorpay_order_id }}",
+    "handler": function (response){
+        document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+        document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+        document.getElementById('razorpay_signature').value = response.razorpay_signature;
+        document.getElementById('razorpay-form').submit();
+    },
+    "prefill": {
+        "name": "{{ user_name }}",
+        "email": "{{ user_email }}"
+    },
+    "theme": {
+        "color": "#403ecc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+    alert("Payment Failed! Reason: " + response.error.description);
+});
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+// Automatically open checkout on load
+window.onload = function() {
+    rzp1.open();
+};
+</script>
     </div>
 </div>
 {% endblock %}

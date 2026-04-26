@@ -2,6 +2,13 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from .models import Facility, FacilityBooking
 from residents.models import ResidentProfile
+import razorpay
+from django.conf import settings
+
+def _razorpay_client():
+    return razorpay.Client(
+        auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
+    )
 
 def list_facilities():
     """
@@ -126,4 +133,32 @@ def edit_booking(booking_id, user, facility_id, date, start_time, end_time):
     booking.end_time = end_time
     booking.save()
     return booking
+
+def create_booking_razorpay_order(amount_inr):
+    """
+    Creates a Razorpay order for facility booking.
+    """
+    client = _razorpay_client()
+    amount_paise = int(float(amount_inr) * 100)
+    order = client.order.create({
+        'amount': amount_paise,
+        'currency': 'INR',
+        'payment_capture': 1,
+    })
+    return order
+
+def verify_booking_payment_signature(payment_id, order_id, signature):
+    """
+    Verifies Razorpay signature for facility booking.
+    """
+    client = _razorpay_client()
+    try:
+        client.utility.verify_payment_signature({
+            'razorpay_order_id': order_id,
+            'razorpay_payment_id': payment_id,
+            'razorpay_signature': signature,
+        })
+        return True
+    except razorpay.errors.SignatureVerificationError:
+        return False
 
