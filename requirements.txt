@@ -1,5 +1,5 @@
 # Core Framework
-Django>=4.2.0
+Django>=6.0.0
 
 # Database & Environment
 psycopg2-binary>=2.9.9
