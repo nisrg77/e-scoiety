@@ -21,6 +21,16 @@ def check_availability(facility_id, date, start_time, end_time, exclude_booking_
     Checks if there are any conflicting confirmed or pending bookings 
     for the requested facility, date, and time range.
     """
+    from datetime import date as date_obj, time as time_obj
+    
+    # Convert strings to objects if necessary
+    if isinstance(date, str):
+        date = date_obj.fromisoformat(date)
+    if isinstance(start_time, str):
+        start_time = time_obj.fromisoformat(start_time)
+    if isinstance(end_time, str):
+        end_time = time_obj.fromisoformat(end_time)
+
     conflicts = FacilityBooking.objects.filter(
         facility_id=facility_id,
         date=date,
@@ -40,6 +50,14 @@ def book_facility(facility_id, date, start_time, end_time, resident_id=None, boo
     if not check_availability(facility_id, date, start_time, end_time):
         raise ValueError("The facility is already booked for this time slot.")
         
+    from datetime import date as date_obj, time as time_obj
+    if isinstance(date, str):
+        date = date_obj.fromisoformat(date)
+    if isinstance(start_time, str):
+        start_time = time_obj.fromisoformat(start_time)
+    if isinstance(end_time, str):
+        end_time = time_obj.fromisoformat(end_time)
+
     facility = get_object_or_404(Facility, id=facility_id)
     
     kwargs = {

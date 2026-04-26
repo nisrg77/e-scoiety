@@ -62,7 +62,12 @@ def book_facility_view(request):
                 return redirect('my_bookings')
         except ValueError as e:
             facilities = services.list_facilities()
-            return render(request, 'facilities/book.html', {'error': str(e), 'facilities': facilities})
+            base_template = 'admin_base.html' if request.user.role == 'admin' else 'resident_base.html'
+            return render(request, 'facilities/book.html', {
+                'error': str(e), 
+                'facilities': facilities,
+                'base_template': base_template
+            })
         except ResidentProfile.DoesNotExist:
             return redirect('resident_dashboard')
     
