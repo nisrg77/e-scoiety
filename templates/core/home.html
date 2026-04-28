@@ -1,189 +1,529 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html class="scroll-smooth" lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to eSociety | Community Management</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #4F46E5;
-            --primary-dark: #3730A3;
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>eSociety | The Luminous Ledger for Modern Living</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Link to extracted CSS -->
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        /* === eSociety Project Design Tokens (synced with base.html) === */
+                        "primary": "#403ecc",
+                        "primary-container": "#5a5ae6",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#f1eeff",
+                        "primary-fixed": "#e1dfff",
+                        "primary-fixed-dim": "#c1c1ff",
+                        "inverse-primary": "#c1c1ff",
+
+                        "secondary": "#3a5ca6",
+                        "secondary-container": "#8fafff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#194089",
+                        "secondary-fixed": "#d9e2ff",
+                        "secondary-fixed-dim": "#b0c6ff",
+
+                        "tertiary": "#764c00",
+                        "tertiary-container": "#966200",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#ffedda",
+                        "tertiary-fixed": "#ffddb4",
+                        "tertiary-fixed-dim": "#ffb955",
+
+                        "surface": "#f8f9fd",
+                        "surface-bright": "#f8f9fd",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f2f3f7",
+                        "surface-container": "#edeef2",
+                        "surface-container-high": "#e7e8ec",
+                        "surface-container-highest": "#e1e2e6",
+                        "surface-dim": "#d9dade",
+                        "surface-variant": "#e1e2e6",
+                        "surface-tint": "#4b4ad7",
+                        "inverse-surface": "#2e3134",
+                        "inverse-on-surface": "#eff1f5",
+
+                        "on-surface": "#191c1f",
+                        "on-surface-variant": "#464554",
+                        "on-background": "#191c1f",
+                        "background": "#f8f9fd",
+
+                        "outline": "#777586",
+                        "outline-variant": "#c7c4d7",
+
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "unit": "8px",
+                        "stack-gap": "16px",
+                        "container-max": "1360px",
+                        "section-gap": "100px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Plus Jakarta Sans"],
+                        "button": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "h2": ["Plus Jakarta Sans"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "label-bold": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "h3": ["22px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "button": ["15px", { "lineHeight": "1", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "h2": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "h1": ["60px", { "lineHeight": "1.12", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-bold": ["13px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                },
+            },
         }
-        body {
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #10B981 0%, #4F46E5 60%, #3730A3 100%);
-            display: flex;
-            flex-direction: column;
-            color: white;
-            position: relative;
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-        }
-        /* Animated background blobs */
-        body::before, body::after {
-            content: '';
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.25;
-            animation: blobFloat 8s ease-in-out infinite alternate;
-            z-index: 0;
-        }
-        body::before {
-            width: 400px; height: 400px;
-            background: #818CF8;
-            top: -100px; left: -100px;
-        }
-        body::after {
-            width: 300px; height: 300px;
-            background: #6EE7B7;
-            bottom: -80px; right: -80px;
-            animation-delay: -3s;
-        }
-        @keyframes blobFloat {
-            0%   { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(30px, 20px) scale(1.1); }
-        }
-        .navbar {
-            z-index: 10;
-            padding: 24px 40px;
-            background: transparent;
-        }
-        .navbar-brand {
-            color: white !important;
-            font-weight: 700;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-        .navbar-brand .material-icons-round {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 8px;
-        }
-        .nav-link {
-            color: rgba(255, 255, 255, 0.9) !important;
-            font-weight: 500;
-            padding: 10px 24px !important;
-            border-radius: 10px;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-        .nav-link:hover {
-            color: white !important;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .btn-nav-login {
-            background: white;
-            color: var(--primary) !important;
-            font-weight: 600;
-            margin-left: 10px;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-        }
-        .btn-nav-login:hover {
-            background: #f8f9fa;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        }
-        .hero-section {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            z-index: 10;
-            padding: 40px 20px;
-        }
-        .hero-content h1 {
-            font-size: 4rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-            margin-bottom: 24px;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-        .hero-content p {
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.9);
-            max-width: 600px;
-            margin: 0 auto 40px auto;
-            line-height: 1.6;
-        }
-        .hero-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-        }
-        .hero-buttons .btn {
-            font-size: 1.1rem;
-            font-weight: 600;
-            padding: 14px 32px;
-            border-radius: 12px;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-        }
-        .btn-get-started {
-            background: white;
-            color: var(--primary) !important;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            border: none;
-        }
-        .btn-get-started:hover {
-            background: #f8f9fa;
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
-            color: var(--primary-dark) !important;
-        }
-        .btn-outline-light {
-            border: 2px solid rgba(255,255,255,0.3);
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
-            color: white !important;
-        }
-        .btn-outline-light:hover {
-            background: rgba(255,255,255,0.15);
-            border-color: rgba(255,255,255,0.5);
-            transform: translateY(-3px);
-            color: white !important;
-        }
-    </style>
+    </script>
 </head>
-<body>
 
-    <nav class="navbar navbar-expand-lg d-flex justify-content-between align-items-center w-100">
-        <a class="navbar-brand" href="{% url 'home' %}">
-            <span class="material-icons-round">apartment</span>
-            eSociety
-        </a>
-        <div class="d-flex align-items-center">
-            <a class="nav-link" href="{% url 'signup' %}">Create Account</a>
-            <a class="nav-link btn-nav-login" href="{% url 'login' %}">Sign In</a>
-        </div>
-    </nav>
-
-    <div class="hero-section">
-        <div class="hero-content">
-            <h1>Elevate Your Community Living</h1>
-            <p>Experience seamless communication, transparent operations, and enhanced security with our modern residential management solution.</p>
-            <div class="hero-buttons">
-                <a href="{% url 'signup' %}" class="btn btn-get-started gap-2">
-                    Register Society
-                    <span class="material-icons-round fs-5">arrow_forward</span>
-                </a>
-                <a href="{% url 'login' %}" class="btn btn-outline-light">
-                    Resident Login
-                </a>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden hero-gradient">
+    <!-- TopNavBar -->
+    <header id="home-header"
+        class="sticky top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl no-border shadow-[0_12px_40px_rgba(25,28,31,0.04)] transition-all">
+        <nav class="flex justify-between items-center px-10 py-5 max-w-[1360px] mx-auto">
+            <div class="text-2xl font-bold tracking-tighter text-[#191C1F] dark:text-white font-h2">eSociety</div>
+            <div
+                class="hidden md:flex items-center gap-10 font-['Plus_Jakarta_Sans'] font-semibold text-[15px] tracking-tight">
+                <a class="text-[#5A5AE6] dark:text-[#8FAFFF] font-bold transition-all duration-300"
+                    href="#">Features</a>
+                <a class="text-[#191C1F] dark:text-slate-400 hover:text-[#5A5AE6] transition-all duration-300"
+                    href="#">Pricing</a>
+                <a class="text-[#191C1F] dark:text-slate-400 hover:text-[#5A5AE6] transition-all duration-300"
+                    href="#">About</a>
+            </div>
+            <div class="flex items-center gap-4 font-button">
+                <a href="{% url 'login' %}"
+                    class="px-6 py-2.5 text-[#191C1F] dark:text-slate-400 hover:text-[#5A5AE6] transition-all duration-300 active:scale-95">Login</a>
+                <a href="{% url 'signup' %}"
+                    class="px-7 py-3 bg-primary-container text-on-primary-container rounded-full button-glow transition-all duration-300 active:scale-95 shadow-lg">Get
+                    Started</a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <!-- Hero Section -->
+        <section
+            class="max-w-[1360px] mx-auto px-10 pt-24 pb-32 grid md:grid-cols-2 gap-16 items-center min-h-[calc(100vh-80px)]">
+            <div class="flex flex-col gap-6">
+                <h1 class="text-h1 font-h1 text-on-background">
+                    Elevate Your
+                    <br />
+                    <span class="text-primary-container">Community Living</span>
+                </h1>
+                <p class="text-body-lg font-body-lg text-on-surface-variant max-w-xl leading-relaxed">
+                    Experience seamless communication, robust security, and absolute financial transparency. The
+                    ultimate OS for modern residential societies.
+                </p>
+                <div class="flex flex-wrap gap-5 mt-6">
+                    <a href="{% url 'signup' %}"
+                        class="px-8 py-3.5 bg-primary text-white rounded-xl font-button button-glow transition-all flex items-center gap-2 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5">
+                        Get Started <span class="material-symbols-outlined text-xl">arrow_forward</span>
+                    </a>
+                    <a href="{% url 'login' %}"
+                        class="px-8 py-3.5 glass-card rounded-xl font-button text-primary hover:bg-white transition-all inline-block text-center">
+                        View Demo
+                    </a>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="absolute -inset-4 bg-primary/20 blur-3xl rounded-full opacity-30"></div>
+                <img alt="eSociety Dashboard Preview"
+                    class="relative w-full h-auto squircle shadow-2xl glass-card object-cover"
+                    data-alt="Modern sleek dashboard interface with colorful charts, clean typography, and translucent panels showcasing residential analytics and community growth"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAA64VGKa449sEcJmymsstPvtZUsCwuSrGMroz67Rc-3sk14Nhy1-ecJXC10ZwcUnUAt0Kr57kY-ujMGgeJExjEB-Y0X4uQGhpf7XMWKlHUWqx_Mn0KyUKdZMTEMhpEYChB6bhik3iJp80nTKYsPDw1QAxNXB5DYjxXAR54B0nC9eVPPP60zu5FOfXvG6uVbaww2oM06bS3dy6LtMtGs_7TTf_bXmAN72xw6qgKVmASSsHfpOEJPdCxfYeKGVDb7YqjAhFqA0V8bdlO" />
+            </div>
+        </section>
+        <!-- Social Proof -->
+        <section class="bg-surface-container-low py-20">
+            <div class="max-w-[1360px] mx-auto px-10">
+                <p class="text-center text-label-bold font-label-bold text-outline mb-14 uppercase">
+                    Trusted by 500+
+                    Premium Societies
+                </p>
+                <div
+                    class="flex flex-wrap justify-center items-center gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+                    <span class="text-2xl font-bold font-h2">MARATHON</span>
+                    <span class="text-2xl font-bold font-h2">LODHA</span>
+                    <span class="text-2xl font-bold font-h2">OBEROI</span>
+                    <span class="text-2xl font-bold font-h2">GODREJ</span>
+                    <span class="text-2xl font-bold font-h2">TATA</span>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mt-20 text-center">
+                    <div>
+                        <div class="text-h2 font-h2 text-primary">500+</div>
+                        <div class="text-body-md font-body-md text-on-surface-variant">Societies</div>
+                    </div>
+                    <div>
+                        <div class="text-h2 font-h2 text-primary">100k+</div>
+                        <div class="text-body-md font-body-md text-on-surface-variant">Residents</div>
+                    </div>
+                    <div>
+                        <div class="text-h2 font-h2 text-primary">4.9/5</div>
+                        <div class="text-body-md font-body-md text-on-surface-variant">App Rating</div>
+                    </div>
+                    <div>
+                        <div class="text-h2 font-h2 text-primary">24/7</div>
+                        <div class="text-body-md font-body-md text-on-surface-variant">Support</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Key Features Grid -->
+        <section class="max-w-[1360px] mx-auto px-10 py-section-gap">
+            <div class="text-center max-w-3xl mx-auto mb-20">
+                <h2 class="text-h2 font-h2 mb-5">Everything you need to manage your society</h2>
+                <p class="text-body-lg font-body-lg text-on-surface-variant">
+                    Powerful features designed to automate
+                    workflows and enhance resident satisfaction.
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Card 1 -->
+                <div class="glass-card p-8 squircle group hover:scale-[1.02] transition-all">
+                    <div
+                        class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-3xl">account_balance_wallet</span>
+                    </div>
+                    <h3 class="text-h3 font-h3 text-xl mb-3">Financial Transparency</h3>
+                    <p class="text-on-surface-variant text-body-md">
+                        Real-time accounting, automated maintenance billing,
+                        and transparent ledger access for all.
+                    </p>
+                </div>
+                <!-- Card 2 -->
+                <div class="glass-card p-8 squircle group hover:scale-[1.02] transition-all">
+                    <div
+                        class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-3xl">shield</span>
+                    </div>
+                    <h3 class="text-h3 font-h3 text-xl mb-3">Smart Security</h3>
+                    <p class="text-on-surface-variant text-body-md">
+                        Visitor management, staff attendance, and emergency
+                        SOS alerts at your fingertips.
+                    </p>
+                </div>
+                <!-- Card 3 -->
+                <div class="glass-card p-8 squircle group hover:scale-[1.02] transition-all">
+                    <div
+                        class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-3xl">event_available</span>
+                    </div>
+                    <h3 class="text-h3 font-h3 text-xl mb-3">Facility Booking</h3>
+                    <p class="text-on-surface-variant text-body-md">
+                        Seamlessly book clubhouses, gyms, and sports courts
+                        with integrated conflict resolution.
+                    </p>
+                </div>
+                <!-- Card 4 -->
+                <div class="glass-card p-8 squircle group hover:scale-[1.02] transition-all">
+                    <div
+                        class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-3xl">chat_bubble</span>
+                    </div>
+                    <h3 class="text-h3 font-h3 text-xl mb-3">Resident Chat</h3>
+                    <p class="text-on-surface-variant text-body-md">
+                        Official notice boards and community discussion
+                        groups for better local networking.
+                    </p>
+                </div>
+            </div>
+        </section>
+        <!-- Platform Overview (Bento Style) -->
+        <section class="bg-surface-container py-section-gap">
+            <div class="max-w-[1360px] mx-auto px-10">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+                    <div class="max-w-xl">
+                        <h2 class="text-h2 font-h2 mb-4">Unified experience for everyone</h2>
+                        <p class="text-body-lg font-body-lg text-on-surface-variant">
+                            Three specialized interfaces
+                            connected to one powerful core system.
+                        </p>
+                    </div>
+                    <div class="flex gap-2 p-1 bg-white rounded-full">
+                        <button data-tab-btn="admin"
+                            class="px-6 py-2 bg-primary text-white rounded-full font-button text-sm transition-colors">
+                            Admin
+                        </button>
+                        <button data-tab-btn="resident"
+                            class="px-6 py-2 text-on-surface-variant rounded-full font-button text-sm transition-colors">
+                            Resident
+                        </button>
+                        <button data-tab-btn="security"
+                            class="px-6 py-2 text-on-surface-variant rounded-full font-button text-sm transition-colors">
+                            Security
+                        </button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                    <div class="md:col-span-8 glass-card pt-8 px-8 squircle overflow-hidden flex flex-col justify-between max-h-[500px]"
+                        data-tab-panel="admin">
+                        <div class="mb-5">
+                            <h4 class="text-h3 font-h3 mb-3">Admin Command Center</h4>
+                            <p class="text-body-md text-on-surface-variant max-w-md">
+                                Complete control over society finances, vendor management, and official communications
+                                from a single high-performance dashboard.
+                            </p>
+                        </div>
+                        <div class="-mx-8 mt-2 overflow-hidden">
+                            <img alt="Admin Dashboard"
+                                 class="w-full max-h-[280px] object-cover object-top"
+                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwf-biCP19ii_4pq9JjkjgUEX0ejXplcS9EePO6OMHEDS2-Yr_B6gvnAIETmrR3v-jyl7SFRa-RfMTa2Rk5WNuHRkV2gXYmZ74JsIp5HwIvRR1AdFOpxBks9Z8lPg7ACn6HPUHXyfjcbwnGCV_17JJuxao38FkNb2AmdArHPfVkwVSm_o1HxmIsP5E6JVxUdSwg6WvfobEKcd_6bgpHEDT6tHp79NVcis1KFlRVMf2bSh45OPQHrs8Zo957DiFXO5eIsxjC2hCwyKN" />
+                        </div>
+                    </div>
+                    <div class="md:col-span-8 glass-card pt-8 px-8 squircle overflow-hidden flex flex-col justify-between hidden max-h-[500px]"
+                        data-tab-panel="resident">
+                        <div class="mb-5">
+                            <h4 class="text-h3 font-h3 mb-3">Resident App</h4>
+                            <p class="text-body-md text-on-surface-variant max-w-md">
+                                Pay maintenance, invite guests, and raise complaints on the go.
+                            </p>
+                        </div>
+                        <div class="-mx-8 mt-2 overflow-hidden">
+                            <img alt="Resident App"
+                                 class="w-full max-h-[280px] object-cover object-top"
+                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj1fzuV0Q6ffeLWZ9key_eB0aDiasmwtrsoM8VPZQAQ1upKZk2JFoarRzuQoDifOUvQHw82iewEp5h7V5lO0mLYRZ6UzYtRrrKgKKWfYwTQvoB1BT5JwOm3U_RnCho7iafmaILYlAIGXA0MF3T-I4mbcqWZ-7Ua3QlJiiVU4R6uk72tWbwqoS4WsR9dElLzlsgVb_WiHeYBXEryJ2VY8ospKLWLGbEenDOd4C-LEgGfcp0QUlhIvP9XJ9olAnGCzOzOrOQ6LClfN1B" />
+                        </div>
+                    </div>
+                    <div class="md:col-span-8 glass-card pt-8 px-8 squircle overflow-hidden flex flex-col justify-between hidden max-h-[500px]"
+                        data-tab-panel="security">
+                        <div class="mb-5">
+                            <h4 class="text-h3 font-h3 mb-3">Security Hub</h4>
+                            <p class="text-body-md text-on-surface-variant max-w-md">
+                                Simple, tablet-first interface for gatekeepers and staff.
+                            </p>
+                        </div>
+                        <div class="-mx-8 mt-2 overflow-hidden">
+                            <img alt="Security Hub"
+                                 class="w-full max-h-[280px] object-cover object-top"
+                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwf-biCP19ii_4pq9JjkjgUEX0ejXplcS9EePO6OMHEDS2-Yr_B6gvnAIETmrR3v-jyl7SFRa-RfMTa2Rk5WNuHRkV2gXYmZ74JsIp5HwIvRR1AdFOpxBks9Z8lPg7ACn6HPUHXyfjcbwnGCV_17JJuxao38FkNb2AmdArHPfVkwVSm_o1HxmIsP5E6JVxUdSwg6WvfobEKcd_6bgpHEDT6tHp79NVcis1KFlRVMf2bSh45OPQHrs8Zo957DiFXO5eIsxjC2hCwyKN" />
+                        </div>
+                    </div>
+                    <div class="md:col-span-4 flex flex-col gap-8">
+                        <div class="glass-card p-8 squircle h-full flex items-center justify-center text-center">
+                            <div>
+                                <h4 class="text-xl font-bold font-h3 mb-2 text-primary">Cross-Platform</h4>
+                                <p class="text-sm text-on-surface-variant mb-4">
+                                    Available on iOS, Android, and Web
+                                    browsers.
+                                </p>
+                                <div class="flex gap-4 justify-center">
+                                    <span class="material-symbols-outlined text-4xl text-outline">phone_iphone</span>
+                                    <span class="material-symbols-outlined text-4xl text-outline">laptop_mac</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Pricing Section -->
+        <section class="max-w-[1360px] mx-auto px-10 py-section-gap">
+            <div class="text-center max-w-3xl mx-auto mb-20">
+                <h2 class="text-h2 font-h2 mb-5">Simple, transparent pricing</h2>
+                <p class="text-body-lg font-body-lg text-on-surface-variant">
+                    Choose the plan that best fits your
+                    community size and requirements.
+                </p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Tier 1 -->
+                <div class="glass-card p-10 squircle border-transparent hover:border-primary/20 transition-all">
+                    <div class="text-label-bold font-label-bold text-primary uppercase mb-4">Basic</div>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-bold font-h2 text-on-background">$49</span>
+                        <span class="text-on-surface-variant">/month</span>
+                    </div>
+                    <p class="text-on-surface-variant mb-8 text-sm">
+                        Ideal for small buildings and apartments with up to
+                        20 units.
+                    </p>
+                    <ul class="space-y-4 mb-10 text-body-md">
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check_circle</span> Maintenance
+                            Billing
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check_circle</span> Basic
+                            Security Desk
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check_circle</span> Notice
+                            Board
+                        </li>
+                        <li class="flex items-center gap-3 text-on-surface-variant/40">
+                            <span class="material-symbols-outlined text-xl">cancel</span> Facility Booking
+                        </li>
+                    </ul>
+                    <a href="{% url 'signup' %}"
+                        class="w-full py-4 border-2 border-primary/20 text-primary rounded-xl font-button hover:bg-primary hover:text-white transition-all block text-center">Get
+                        Started</a>
+                </div>
+                <!-- Tier 2 (Featured) -->
+                <div class="glass-card p-10 squircle bg-white relative border-primary shadow-2xl scale-105 z-10">
+                    <div
+                        class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-4 py-1 rounded-full uppercase tracking-widest">
+                        Most Popular
+                    </div>
+                    <div class="text-label-bold font-label-bold text-primary uppercase mb-4">Pro</div>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-bold font-h2 text-on-background">$129</span>
+                        <span class="text-on-surface-variant">/month</span>
+                    </div>
+                    <p class="text-on-surface-variant mb-8 text-sm">Perfect for active communities with up to 150 units.
+                    </p>
+                    <ul class="space-y-4 mb-10 text-body-md">
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check_circle</span> All Basic
+                            Features
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check_circle</span> Full
+                            Facility
+                            Booking
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check_circle</span> Visitor
+                            Management Pro
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check_circle</span> Staff
+                            Attendance App
+                        </li>
+                    </ul>
+                    <a href="{% url 'signup' %}"
+                        class="w-full py-4 bg-primary text-white rounded-xl font-button button-glow shadow-lg shadow-primary/30 transition-all block text-center">Get
+                        Started</a>
+                </div>
+                <!-- Tier 3 -->
+                <div class="glass-card p-10 squircle border-transparent hover:border-primary/20 transition-all">
+                    <div class="text-label-bold font-label-bold text-primary uppercase mb-4">Enterprise</div>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-bold font-h2 text-on-background">Custom</span>
+                    </div>
+                    <p class="text-on-surface-variant mb-8 text-sm">
+                        Bespoke solutions for large gated communities &amp;
+                        townships.
+                    </p>
+                    <ul class="space-y-4 mb-10 text-body-md">
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check_circle</span> Unlimited
+                            Units
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check_circle</span> Dedicated
+                            Manager
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                            Multi-Society
+                            Sync
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check_circle</span> Custom API
+                            Integrations
+                        </li>
+                    </ul>
+                    <a href="{% url 'signup' %}"
+                        class="w-full py-4 border-2 border-primary/20 text-primary rounded-xl font-button hover:bg-primary hover:text-white transition-all block text-center">Contact
+                        Sales</a>
+                </div>
+            </div>
+        </section>
+        <!-- Final CTA -->
+        <section class="max-w-[1360px] mx-auto px-10 mb-24">
+            <div class="bg-primary-container p-16 squircle text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full -mr-40 -mt-40 blur-3xl"></div>
+                <div class="absolute bottom-0 left-0 w-80 h-80 bg-black/10 rounded-full -ml-40 -mb-40 blur-3xl"></div>
+                <h2 class="text-h2 font-h2 text-white mb-6 relative z-10">Ready to transform your society?</h2>
+                <p class="text-on-primary-container text-body-lg mb-10 max-w-2xl mx-auto relative z-10 opacity-90">
+                    Join
+                    hundreds of communities that have already upgraded to a smarter, more secure way of living.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-5 relative z-10">
+                    <a href="{% url 'signup' %}"
+                        class="px-10 py-4 bg-white text-primary font-button rounded-xl hover:shadow-2xl transition-all shadow-lg">Get
+                        Started Now</a>
+                    <button
+                        class="px-10 py-4 bg-primary text-white border border-white/20 font-button rounded-xl hover:bg-primary/80 transition-all">
+                        Schedule
+                        a Demo
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer -->
+    <footer
+        class="w-full rounded-t-[2rem] mt-24 bg-[#F2F3F7] dark:bg-slate-950 font-['Inter'] text-sm text-slate-600 dark:text-slate-400 tonal-shift">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-12 px-10 py-20 max-w-[1360px] mx-auto">
+            <div class="col-span-2 md:col-span-1">
+                <div class="text-xl font-bold text-[#191C1F] dark:text-white mb-6">eSociety</div>
+                <p class="mb-6 max-w-xs">
+                    The Luminous Ledger. Redefining how communities connect, secure, and grow in
+                    the modern age.
+                </p>
+            </div>
+            <div class="flex flex-col gap-4">
+                <h5 class="text-[#191C1F] dark:text-white font-bold uppercase text-[10px] tracking-widest mb-2">Product
+                </h5>
+                <a class="hover:text-[#5A5AE6] dark:hover:text-white transition-colors" href="#">Features</a>
+                <a class="hover:text-[#5A5AE6] dark:hover:text-white transition-colors" href="#">Pricing</a>
+                <a class="hover:text-[#5A5AE6] dark:hover:text-white transition-colors" href="#">Security</a>
+                <a class="hover:text-[#5A5AE6] dark:hover:text-white transition-colors" href="#">Documentation</a>
+            </div>
+            <div class="flex flex-col gap-4">
+                <h5 class="text-[#191C1F] dark:text-white font-bold uppercase text-[10px] tracking-widest mb-2">Company
+                </h5>
+                <a class="hover:text-[#5A5AE6] dark:hover:text-white transition-colors" href="#">About Us</a>
+                <a class="hover:text-[#5A5AE6] dark:hover:text-white transition-colors" href="#">Careers</a>
+                <a class="hover:text-[#5A5AE6] dark:hover:text-white transition-colors" href="#">Contact</a>
+                <a class="hover:text-[#5A5AE6] dark:hover:text-white transition-colors" href="#">Support</a>
+            </div>
+            <div class="flex flex-col gap-4">
+                <h5 class="text-[#191C1F] dark:text-white font-bold uppercase text-[10px] tracking-widest mb-2">Legal
+                </h5>
+                <a class="hover:text-[#5A5AE6] dark:hover:text-white transition-colors" href="#">Terms</a>
+                <a class="hover:text-[#5A5AE6] dark:hover:text-white transition-colors" href="#">Privacy</a>
             </div>
         </div>
-    </div>
-
+        <div class="max-w-[1360px] mx-auto px-10 py-8 border-t border-slate-200 dark:border-slate-800 text-center">
+            © 2026 eSociety. The Luminous Ledger. All rights reserved.
+        </div>
+    </footer>
+    <!-- Link to extracted JS -->
+    <script src="{% static 'js/home.js' %}"></script>
 </body>
+
 </html>
